@@ -1,7 +1,3 @@
-<%- include('partials/header.ejs') %>
-
-<script>
-
 $(document).ready(function(){
 
 //global variables
@@ -59,19 +55,3 @@ $("#searchResult").on("click", "#addToCart", function(){
 
 });//document ready
 
-
-    
-</script>
-
-
-    <h4> Find an album... </h4>
-     <input type="text" id="albumSearch" placeholder="Album name or artist">  <br /> <br /> 
-    <h5>Recommended Albums for you: </h5>
-    
-    <!-- Searched for albums show here. Default before search is a randomly selected album. -->
-    <span id="searchResult"> 
-    <img src="/img/abbeyroad.jpg" alt="Abbey Road - Beatles">
-    </span>
-
-</body>
-</html>

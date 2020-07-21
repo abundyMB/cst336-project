@@ -1,7 +1,3 @@
-<%- include('partials/header.ejs') %>
-
-<script>
-
 $(document).ready(function(){
     
     //global variables
@@ -74,24 +70,3 @@ calculateTotals();
 
 });//document ready
     
-</script>
-
-<h1 style="text-align: left"> Shopping Cart </h1>
-<hr /> 
-<div id="cartList">
- 
-</div>
-
-<div id="priceTotals">
-    <h5> Order Summary </h5>
-    <hr />
-    <p id = "itemsTotal"> Items: $0.00 </p>
-    <p id = "taxTotal"> Tax: $0.00 </p>
-    <p id = "shippingTotal"> Shipping: $0.00 </p>
-    <hr />
-    <p id="orderTotal"> Order Total: $0.00 </p>
-    
-</div>
-
-   </body>
-</html>

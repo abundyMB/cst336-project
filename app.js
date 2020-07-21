@@ -7,12 +7,12 @@ app.use(express.static("public"));
 //routes 
 app.get("/", function(req, res){
  
- res.render("index.html");
+ res.render("index.ejs");
  });
  
  app.get("/cart", function(req, res){
  
- res.render("cart.html");
+ res.render("cart.ejs");
  });
  
 
