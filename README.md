@@ -1,1 +1,1 @@
-# cst336-project
+# project

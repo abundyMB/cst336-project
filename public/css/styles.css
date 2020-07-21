@@ -1,0 +1,17 @@
+
+#cartList {
+    float: left;
+}
+
+#priceTotals {
+    float: right;   
+    margin-right: 5em;
+
+}
+
+#orderTotal {
+    
+    font-weight: bold;
+    font-size: 1.5em;
+    
+}
