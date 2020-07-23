@@ -13,7 +13,7 @@ $(document).ready(function(){
     ];
     
     var customerCart = [1];
-    localStorage.setItem("customerCart", customerCart);
+    // localStorage.setItem("customerCart", customerCart);
     
     //function to find albums by name or artist and display them to user
     $("#albumSearch").on("change", function(){
