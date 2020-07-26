@@ -1,0 +1,104 @@
+<%- include('partials/header.ejs') %>
+<script src="/js/admin.js"></script>
+<nav class="navbar navbar-light bg-light">
+<a href="/admin">Administrator Options</a>
+<a href="/reports">Reports</a>
+</nav>
+<hr /> 
+
+<div class="container">
+    <h2>Add new album to collection:</h2>
+    <form id="add-form" action="/admin-testing">
+        <div class="form-group">
+            <div class="col-xs-4">
+                <span class="text-danger" id="title-artist-error">Error</span>
+                <label for="title">Album Title:</label>
+                <h3 id="validationFdbk" class="bg-danger text-white"></h3>
+                <input type="text" class="form-control" id="add-title" name="title" placeholder="Enter Album Title" required>
+            </div>
+            <div class="col-xs-3">
+                <label for="artist">Artist:</label>
+                <h3 id="validationFdbk" class="bg-danger text-white"></h3>
+                <input type="text" class="form-control" id="add-artist" name="artist" placeholder="Enter artist name">
+            </div>
+            <div class="col-xs-5">
+                <label for="coverImage">Image file to upload:</label>
+                <h3 id="validationFdbk" class="bg-danger text-white"></h3>
+                <input type="file" class="form-control" id="add-coverImage" name="coverImage" placeholder="Enter cover art image">
+            </div>
+            <div class="col-xs-2">
+                <label for="genre">Genre:</label>
+                <h3 id="validationFdbk" class="bg-danger text-white"></h3>
+                <input type="text" class="form-control" id="add-genre" name="genre" placeholder="Enter music genre">
+            </div>
+            <div class="col-xs-2">
+                <label for="price">Price:</label>
+                <h3 id="validationFdbk" class="bg-danger text-white"></h3>
+                <input type="text" class="form-control col-xs-2" id="add-price" name="price" placeholder="Enter price">
+            </div>
+            <button type="submit" class="btn btn-primary btn-success">Submit</button>
+        </div>
+    </form>
+</div>
+
+<hr />
+
+
+<textarea id="report-display" style="width:800px;height:400px"></textarea>
+
+<div>
+    <h2> Update an album </h2>
+        <input type="text" id="albumSearch" placeholder="Album name or artist">  <br /> <br /> 
+    <span id="searchUpdate"> 
+</div>
+<div class="container">
+    <h4>Update information for selected album:</h4>
+    <form id="album-form" action="/admin-testing">
+        <div class="form-group">
+            <div class="col-xs-4">
+                <label for="title">Album Title:</label>
+                <h3 id="validationFdbk" class="bg-danger text-white"></h3>
+                <input type="text" class="form-control" id="update-title" name="title" placeholder="Enter Album Title">
+            </div>
+            <div class="col-xs-3">
+                <label for="artist">Artist:</label>
+                <h3 id="validationFdbk" class="bg-danger text-white"></h3>
+                <input type="text" class="form-control" id="update-artist" name="artist" placeholder="Enter artist name">
+            </div>
+            <div class="col-xs-5">
+                <label for="coverImage">Image file to upload:</label>
+                <h3 id="validationFdbk" class="bg-danger text-white"></h3>
+                <input type="file" class="form-control" id="coverImage" name="update-coverImage" placeholder="Enter cover art image">
+            </div>
+            <div class="col-xs-2">
+                <label for="genre">Genre:</label>
+                <h3 id="validationFdbk" class="bg-danger text-white"></h3>
+                <input type="text" class="form-control" id="update-genre" name="genre" placeholder="Enter music genre">
+            </div>
+            <div class="col-xs-2">
+                <label for="price">Price:</label>
+                <h3 id="validationFdbk" class="bg-danger text-white"></h3>
+                <input type="text" class="form-control col-xs-2" id="update-price" name="price" placeholder="Enter price">
+            </div>
+            <button type="submit" class="btn btn-primary btn-success">Submit</button>
+        </div>
+    </form>
+</div>
+<hr />
+<div class="container">
+    <h2>Delete an album:</h2>
+    <form action="/admin-testing">
+        <div class="form-group col-xs-2">
+            <label for="albumIDNum">Album ID:</label>
+            <h3 id="validationFdbk" class="bg-danger text-white"></h3>
+            <input type="text" class="form-control" id="delete-album" name="delete-album" placeholder="Enter Album ID">
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-danger">Submit</button>
+    </form>
+</div>
+    <hr />
+    
+<!--footer.ejs not added because it displays incorrectly at this time-->
+   </body>
+</html>

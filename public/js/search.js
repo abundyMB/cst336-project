@@ -9,7 +9,19 @@ $(document).ready(function(){
     {albumID:4, title:"Fire of Unknown Origin", artist:"Blue Öyster Cult", coverImage: '<img src="/img/fireofunknownorigin.jpg" alt="Fire of Unknown Origin - Blue Öyster Cult">', price:25.00},
     {albumID:5, title:"Dead Man's Party", artist:"Oingo Boingo", coverImage: '<img src="/img/deadmansparty.jpg" alt="Dead Man\'s Party - Oingo Boingo">', price:25.00},
     {albumID:6, title:"Only a Lad", artist:"Oingo Boingo", coverImage: '<img src="/img/onlyalad.jpg" alt="Only a Lad - Oingo Boingo">', price:25.00},
-    {albumID:7, title:"Master of Puppets", artist:"Metallica", coverImage: '<img src="/img/masterofpuppets.jpg" alt="Master of Puppets - Metallica">', price:25.00}
+    {albumID:7, title:"Master of Puppets", artist:"Metallica", coverImage: '<img src="/img/masterofpuppets.jpg" alt="Master of Puppets - Metallica">', price:25.00},
+    {albumID:8, title:"Dark Side of the Moon", artist:"Pink Floyd", coverImage: '<img src="/img/darksideofthemoon.jpg" alt="Dark Side of the Moon - Pink Floyd">', price:25.00},
+    {albumID:9, title:"Kind of Blue", artist:"Miles Davis", coverImage: '<img src="/img/kindofblue.jpg" alt="Kind of Blue - Miles Davis">', price:25.00},
+    {albumID:10, title:"Come Fly with Me", artist:"Frank Sinatra", coverImage: '<img src="/img/comeflywithme.jpg" alt="Come Fly with Me - Frank Sinatra">', price:25.00},
+    {albumID:11, title:"Queen of Soul", artist:"Etta James", coverImage: '<img src="/img/queenofsoul.jpg" alt="Queen of Soul - Etta James">', price:25.00},
+    {albumID:12, title:"Blues on Top of Blues", artist:"BB King", coverImage: '<img src="/img/bluesontopofblues.jpg" alt="Blues on Top of Blues - BB King">', price:25.00},
+    {albumID:13, title:"The Emancipation of Mimi", artist:"Mariah Carey", coverImage: '<img src="/img/Mariah_Carey_The_Emancipation_of_Mimi.jpg" alt="The Emancipation of Mimi - Mariah Carey">', price:25.00},
+    {albumID:14, title:"Merry Christmas", artist:"Mariah Carey", coverImage: '<img src="/img/Merry_Christmas_Mariah_Carey.jpg" alt="Merry Christmas - Mariah Carey">', price:25.00},
+    {albumID:15, title:"Trilogy", artist:"The Weeknd", coverImage: '<img src="/img/The_Weeknd_Trilogy.jpg" alt="Trilogy -The Weeknd">', price:25.00},
+    {albumID:16, title:"21", artist:"Adele", coverImage: '<img src="/img/Adele_21.jpg" alt="21 - Adele">', price:25.00},
+    {albumID:17, title:"Unorthodox Jukebox", artist:"Bruno Mars", coverImage: '<img src="/img/BrunoMarsUJAlbumCover.jpg" alt="Unorthodox Jukebox - Bruno Mars">', price:25.00},
+    {albumID:18, title:"I Used to Know Her", artist:"H.E.R.", coverImage: '<img src="/img/I_Used_To_Know_Her.jpg" alt="I Used to Know Her - H.E.R.">', price:25.00},
+    {albumID:19, title:"Don't Smile at Me", artist:"Billie Eilish", coverImage: '<img src="/img/Billie_Eilish_Dont_Smile_at_Me.jpg" alt="Dont Smile at Me - Billie Eilish">', price:25.00}
     ];
     
     var customerCart = [1];
