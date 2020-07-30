@@ -34,11 +34,16 @@ app.get("/signup", function(req, res){
  res.render("signup.ejs");
 });
 
+// Still needs to be built.
+app.get("/myAccount", function(req, res){
+ res.send("My Account page currently under construction.");
+});
+
 app.get("/admin", isAuthenticated, function(req, res){
  res.render("admin.ejs");
 });
 
-app.get("/reports", function(req, res){
+app.get("/reports", isAuthenticated, function(req, res){
  res.render("reports.ejs");
 });
 
@@ -46,6 +51,13 @@ app.get("/signup", function(req, res){
  res.render("signup.ejs");
 });
 
+// Still needs to be built.
+app.get("/thankYou", function(req, res){
+ res.send("Thank you page currently under construction.");
+});
+
+// Likely will be "hidden" page in final project. Currently accessible for
+// testing purposes.
 app.get("/adminLogin", function(req, res){
  res.render("adminLogin.ejs");
 });
@@ -104,6 +116,7 @@ app.listen(process.env.PORT, process.env.IP, function(){
  console.log("Express server is running...");
 });
 
+// Verify password is valid. Currently only for admin.
 function checkUsername(username) {
     let sql = "SELECT * FROM admin WHERE username = ? ";
     return new Promise( function(resolve, reject) {
