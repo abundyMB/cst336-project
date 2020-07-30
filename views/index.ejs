@@ -1,11 +1,17 @@
 <%- include('partials/header.ejs') %>
 
+    <!--Displays error when not signed in-->
+    <%- include('partials/loginError.ejs') %>
+    <br /><br />
+    
     <h4> Find an album... </h4>
      <input type="text" id="albumSearch" placeholder="Album name or artist">  <br /> <br /> 
     <h5>Recommended Albums for you: </h5>
     
     <!-- Searched for albums show here. Default before search is a randomly selected album. -->
     <span id="searchResult"> 
-    <img src="/img/abbeyroad.jpg" alt="Abbey Road - Beatles">
+        <img src="/img/abbeyroad.jpg" alt="Abbey Road - Beatles">
     </span>
+    
+    
 <%- include('partials/footer.ejs') %>

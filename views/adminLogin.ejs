@@ -1,17 +1,16 @@
 <%- include('partials/header.ejs') %>
-    <!--<script src="/js/login.js"></script>-->
     <div class="ls-box">
         <h3> Admin Log-In </h3>
         <form id="admin-login-form" method="POST" action="/">
-            <span>Enter your email</span>
+            <span>Enter your username</span>
             <br />
-            <input class="textbox" type="text" id="login-admin" name="adminuser" placeholder="desdinova@sirius.com">  
+            <input class="textbox" type="text" id="login-admin" name="adminuser" placeholder="admin">  
             <br />
             <span>Enter your password</span>
             <br>
-            <input class="textbox" type="text" id="admin-pswd" name="adminpwd">  
+            <input class="textbox" type="password" id="admin-pswd" name="adminpwd">  
             <br />
-            <span class="text-danger" id="admin-login-error">Error</span>
+            <span class="text-danger" id="admin-login-error">Error Placeholder</span>
             <br />
             <div class="text-center">
                 <input class="btn bg-warning text-dark" id="btn-admin-login" type="submit" value="Log In">
@@ -19,10 +18,5 @@
             <br />
         </form>
     </div>
-    <hr>
-    <span>Don't have an account?</span>
-    <br />
-    <input class="btn bg-info text-dark" id="btn-signup" type="submit" value="Create New Account"
-        action="/signup">
     <br /><br />
 <%- include('partials/footer.ejs') %>

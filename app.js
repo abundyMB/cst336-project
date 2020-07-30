@@ -1,13 +1,13 @@
-const express = require("express");
+const express = require('express');
 const app = express();
 const session = require('express-session');
-const request = require("request");
+const request = require('request');
 const bcrypt = require('bcrypt');
-const pool = require("./dbPool.js");
+const pool = require('./dbPool.js');
 
 app.set("view engine", "ejs");
 app.use(express.static("public"));
-//app.engine('html', require('ejs').renderFile);
+// app.engine('html', require('ejs').renderFile);
 
 app.use(session({
     secret: "top secret!",
@@ -39,6 +39,7 @@ app.get("/myAccount", function(req, res){
  res.send("My Account page currently under construction.");
 });
 
+// Only allows admin to be accessed if the user is signed in.
 app.get("/admin", isAuthenticated, function(req, res){
  res.render("admin.ejs");
 });
@@ -62,6 +63,7 @@ app.get("/adminLogin", function(req, res){
  res.render("adminLogin.ejs");
 });
 
+// Logs out of current session. 
 app.get("/logout", function(req, res) {
    req.session.destroy();
    res.redirect("/");
@@ -84,32 +86,30 @@ app.post("/", async function(req, res) {
     console.log("passwordMatch: " + passwordMatch);
     
     if (passwordMatch) {
-        console.log("Password and username Match");
+        console.log("Now signed in as admin");
         req.session.authenticated = true;
-        res.render("index");
+        res.render("admin");
     }
     else {
         console.log("No match");
-        
-//      Currently used to easily show when credentials aren't a match.
-        res.render("cart"); //, {"loginError":true});
+        res.render("index", {"loginError":true});
     }
 });
 
 //***API Routes*** 
 
-// app.get("/api/populateAlbumsArray", function(req, res){
+app.get("/api/populateAlbumsArray", function(req, res){
  
-//  let sql = "SELECT * FROM albums";
+ let sql = "SELECT * FROM albums";
  
-//  pool.query(sql, function(err, rows, fields){
-//   if (err) throw err;
-//   console.log(rows);
-//   res.send(rows);
-  
-//  });
+ pool.query(sql, function(err, rows, fields){
+  if (err) throw err;
+  console.log(rows);
+  res.send(rows);
 
-// });//app.get(populateAlbumArray);
+ });
+
+});//app.get(populateAlbumArray);
 
 //start server
 app.listen(process.env.PORT, process.env.IP, function(){
@@ -139,6 +139,8 @@ function checkPassword(password, hashedValue) {
     });
 }
 
+// Makes sure user is signed in as admin before certain pages are accessed.
+// Currently only for admin.
 function isAuthenticated(req, res, next) {
     if (!req.session.authenticated) {
         res.redirect("/adminLogin");
