@@ -34,7 +34,7 @@ app.get("/signup", function(req, res){
  res.render("signup.ejs");
 });
 
-app.get("/admin", function(req, res){
+app.get("/admin", isAuthenticated, function(req, res){
  res.render("admin.ejs");
 });
 
@@ -48,6 +48,11 @@ app.get("/signup", function(req, res){
 
 app.get("/adminLogin", function(req, res){
  res.render("adminLogin.ejs");
+});
+
+app.get("/logout", function(req, res) {
+   req.session.destroy();
+   res.redirect("/");
 });
 
 app.post("/", async function(req, res) {
@@ -73,6 +78,8 @@ app.post("/", async function(req, res) {
     }
     else {
         console.log("No match");
+        
+//      Currently used to easily show when credentials aren't a match.
         res.render("cart"); //, {"loginError":true});
     }
 });
@@ -121,7 +128,7 @@ function checkPassword(password, hashedValue) {
 
 function isAuthenticated(req, res, next) {
     if (!req.session.authenticated) {
-        res.redirect("/");
+        res.redirect("/adminLogin");
     }
     else {
         next();

@@ -26,7 +26,7 @@ $(document).ready(function() {
     });
 });
 
-// Determinf if the username already exists.
+// Determine if the username already exists.
 function isValidUser() {
     
     // Make sure username is not empty.
