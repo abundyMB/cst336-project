@@ -6,30 +6,67 @@ $(document).ready(function(){
     var shipping = 0;
     var total = 0;
     
-    // test = localStorage.getItem('customerCart');
-    // console.log(test);
+    var cartIDs = [];
+    var albumsArray = [];
+    var customerCart = [];
     
-    var customerCart = [ {albumID:0, title:"Abbey Road", artist:"The Beatles", coverImage: '<img src="/img/abbeyroad.jpg" alt="Abbey Road - Beatles">', price:25.00}, 
-    {albumID:1, title:"Let There Be Cello", artist:"2 Cellos", coverImage: '<img src="/img/2cellos1.jpg" alt="Let There Be Cello - 2 Cellos">',  price:25.00},
-    {albumID:2, title:"Rubber Soul", artist:"The Beatles", coverImage: '<img src="/img/rubbersoul.jpg" alt="Rubber Soul - Beatles">',  price:25.00},
-    {albumID:3, title:"Extraterrestrial Live", artist:"Blue Öyster Cult", coverImage: '<img src="/img/etilive.jpg" alt="Extraterrestrial Live - Blue Öyster Cult">', price:25.00},
-    {albumID:4, title:"Fire of Unknown Origin", artist:"Blue Öyster Cult", coverImage: '<img src="/img/fireofunknownorigin.jpg" alt="Fire of Unknown Origin - Blue Öyster Cult">', price:25.00},
-    {albumID:5, title:"Dead Man's Party", artist:"Oingo Boingo", coverImage: '<img src="/img/deadmansparty.jpg" alt="Dead Man\'s Party - Oingo Boingo">', price:25.00},
-    {albumID:6, title:"Only a Lad", artist:"Oingo Boingo", coverImage: '<img src="/img/onlyalad.jpg" alt="Only a Lad - Oingo Boingo">', price:25.00},
-    {albumID:7, title:"Master of Puppets", artist:"Metallica", coverImage: '<img src="/img/masterofpuppets.jpg" alt="Master of Puppets - Metallica">', price:25.00}
-    ];
+    //API call to get cart albumIDs added in search.ejs
+    getCart();
+    function getCart(){
+        $.ajax({
+            method: "GET",
+            url: "/api/getCart",
+            async: false,
+            
+            success: function(data, status){
+                let string = JSON.stringify(data);
+                let newString = string.replace('[{"albumIDs":"', "").replace(' "}]', "").split(' ');
+                console.log(newString);
+                
+                //fill cart with albumIDs
+                for (let i = 0; i < newString.length; i++){
+                    cartIDs.push(Number(newString[i]));
+                    console.log(cartIDs[i]);
+                }
+            }//success
+        });//ajax
+    }//getCart()
     
+    //API call using Ajax to populate albums array from database. Uses app.get("/api/populateAlbumsArray") route in App.js
+    populateAlbumArray();
+    function populateAlbumArray(){
+        $.ajax({
+            method: "GET",
+            url: "/api/populateAlbumsArray",
+            type: "JSON",
+            async: false,
+            
+            success: function(data, status){
+
+                data.forEach(function(elem, i){
+                  albumObject = {albumID: elem.albumID, title: elem.title, artist: elem.artist, coverImage: elem.coverImage, price: elem.price};
+                  albumsArray[i] = albumObject;
+                });
+            } 
+        });//ajax
+    }//populateAlbumArray()
+    
+    //populate customerCart based on album IDs added to cart in index.ejs and stored in localStorage
+    populateCart();
+    function populateCart(){
+      for (let i = 0; i < cartIDs.length; i++) customerCart.push(albumsArray[cartIDs[i]-1]);
+    };//populateCart
+
     //update cart
     updateCart();
-    
     function updateCart() {
         
         // Clear contents of cart.
         $("#cartList").html("");
         
-        customerCart.forEach(function(element){
+        customerCart.forEach(function(element, i){
             $("#cartList").append(`${element.coverImage} <br /> Artist: ${element.artist} Title: ${element.title} Price: $${element.price} <br />`);   
-            $("#cartList").append(`<button value=${element.albumID} type="button" class="btn btn-warning remove"> Remove Item </button> <br /> <br />`);
+            $("#cartList").append(`<button value=${i} type="button" class="btn btn-warning remove"> Remove Item </button> <br /> <br />`);
         });
         // Update total of all displayed elements.
         calculateTotals();
@@ -61,13 +98,57 @@ $(document).ready(function(){
     //add function to remove items from cart
     $("#cartList").on("click",".remove", function() {
         itemID = $(this).val();
-        delete customerCart[itemID];
         
+        delete customerCart[itemID];
         console.log( $(this).val() );
         
         // Update cart with new display and totals.
         updateCart();
-    
     });//remove items from cart
+    
+    $("#placeOrder").on("click", function(event){
+        let albumIDs = "";
+        let albumTitles ="";
+        cartEmpty = true;
+        
+        customerCart.forEach(function(elem){
+           if (elem != null) cartEmpty = false; 
+        });
+        
+        if (cartEmpty) {
+            $('#cartError').html('<p class="text-danger"> There are no items in your cart. </p>');
+            event.preventDefault();
+        }
+        
+        else {
+        //build strings of albumIDs and albumTitles
+        customerCart.forEach(function(elem) {
+            
+            albumIDs += elem.albumID + ",";
+            albumTitles += elem.title + ",";
+            $('#cartError').html('<p class="text-success"> Order Placed! (Will redirect to Thank-You Page) </p>');
+        });
+        
+        submitOrder(albumIDs, albumTitles, total);
+        }
+    });
+    
+     //api call to /api/submitOrder when Submit Order button is clicked
+    function submitOrder(albumIDs, albumTitles, orderTotal){
+       $.ajax({
+           method: "GET",
+           url: "/api/submitOrder",
+           data: {
+               "albumIDs": albumIDs,
+               "albumTitles": albumTitles,
+               "orderTotal": orderTotal
+           },
+           
+           success: function(data, status){
+               console.log("Submit order returned: " + data);
+           }
+       });//ajax
+    }
+    
 });//document ready
     
