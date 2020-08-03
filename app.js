@@ -108,8 +108,8 @@ app.get("/api/populateAlbumsArray", function(req, res) {
 
 //setCart API route sets the customer cart once a customer clicks the add to cart button
 app.get("/api/setCart", function(req, res) {
-   let sql = 'INSERT INTO cart (albumIDs, customerID) VALUES (?, ?)';
-   let sqlParams = [req.query.albumIDs, req.query.customerID];
+   let sql = 'INSERT INTO cart (albumID, customerID) VALUES (?, ?)';
+   let sqlParams = [req.query.albumID, req.query.customerID];
 
    pool.query(sql, sqlParams, function(err, rows, fields) {
       if (err) throw err;
@@ -117,9 +117,9 @@ app.get("/api/setCart", function(req, res) {
    });
 }); //api/setCart
 
-//getCart API route gets the albumIDs from the cart to display on the cart.ejs page
+//getCart API route gets the albumID from the cart to display on the cart.ejs page
 app.get("/api/getCart", function(req, res) {
-   let sql = 'SELECT albumIDs FROM cart ORDER BY cartID DESC LIMIT 1';
+   let sql = 'SELECT albumID FROM cart ORDER BY cartID DESC LIMIT 1';
 
    pool.query(sql, function(err, rows, fields) {
       if (err) throw err;
@@ -129,8 +129,8 @@ app.get("/api/getCart", function(req, res) {
 
 //submitOrder adds the customer order to the orders table
 app.get("/api/submitOrder", function(req, res) {
-   let sql = 'INSERT INTO orders (albumIDs, albumTitles, orderTotal) VALUES (?,?,?)';
-   let sqlParams = [req.query.albumIDs, req.query.albumTitles, req.query.orderTotal];
+   let sql = 'INSERT INTO orders (albumID, albumTitles, orderTotal) VALUES (?,?,?)';
+   let sqlParams = [req.query.albumID, req.query.albumTitles, req.query.orderTotal];
 
    pool.query(sql, sqlParams, function(err, rows, fields) {
       if (err) throw err;
