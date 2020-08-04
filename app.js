@@ -40,15 +40,11 @@ app.get("/myAccount", function(req, res) {
 });
 
 // Only allows admin to be accessed if the user is signed in.
-// TODO: Avoiding isAuthenticated for speed of testing.
-// app.get("/admin", isAuthenticated, function(req, res) {
-app.get("/admin", function(req, res) {
+app.get("/admin", isAuthenticated, function(req, res) {
    res.render("admin.ejs");
 });
 
-// TODO: Avoiding isAuthenticated for speed of testing.
-// app.get("/reports", isAuthenticated, function(req, res) {
-app.get("/reports", function(req, res) {
+app.get("/reports", isAuthenticated, function(req, res) {
    res.render("reports.ejs");
 });
 
@@ -111,60 +107,69 @@ app.get("/api/populateAlbumsArray", function(req, res) {
 }); //app.get(populateAlbumArray);
 
 //setCart API route sets the customer cart once a customer clicks the add to cart button
-app.get("/api/setCart", function(req, res){
+app.get("/api/setCart", function(req, res) {
    let sql = 'INSERT INTO cart (albumIDs, customerID) VALUES (?, ?)';
    let sqlParams = [req.query.albumIDs, req.query.customerID];
-   
-   pool.query(sql, sqlParams, function(err, rows, fields){
+
+   pool.query(sql, sqlParams, function(err, rows, fields) {
       if (err) throw err;
-      res.send(rows.affectedRows.toString() );
+      res.send(rows.affectedRows.toString());
    });
-});//api/setCart
+}); //api/setCart
 
 //getCart API route gets the albumIDs from the cart to display on the cart.ejs page
-app.get("/api/getCart", function(req, res){
+app.get("/api/getCart", function(req, res) {
    let sql = 'SELECT albumIDs FROM cart ORDER BY cartID DESC LIMIT 1';
-   
-   pool.query(sql, function(err, rows, fields){
+
+   pool.query(sql, function(err, rows, fields) {
       if (err) throw err;
       res.send(rows);
    });
-});//api/getCart
+}); //api/getCart
 
 //submitOrder adds the customer order to the orders table
-app.get("/api/submitOrder", function(req, res){
+app.get("/api/submitOrder", function(req, res) {
    let sql = 'INSERT INTO orders (albumIDs, albumTitles, orderTotal) VALUES (?,?,?)';
    let sqlParams = [req.query.albumIDs, req.query.albumTitles, req.query.orderTotal];
-   
-   pool.query(sql, sqlParams, function(err, rows, fields){
+
+   pool.query(sql, sqlParams, function(err, rows, fields) {
       if (err) throw err;
-      res.send(rows.affectedRows.toString() );
+      res.send(rows.affectedRows.toString());
    });
-});//api/submitOrder
+}); //api/submitOrder
+
+app.get("/api/addAlbumsArray", function(req, res) {
+   let sql = "INSERT INTO albums (title, artist, coverImage, price, genre, tag1, tag2) VALUES (?, ?, ?, ?, ?, ?, ?)";
+   let sqlParams = [req.query.title, req.query.artist, req.query.coverImage, req.query.price, req.query.genre, req.query.tag1, req.query.tag2];
+
+   pool.query(sql, sqlParams, function(err, rows, fields) {
+      if (err) throw err;
+      console.log(rows);
+      res.send(rows.affectedRows.toString());
+   });
+}); // api/addAlbumsArray
 
 app.get("/api/updateAlbumsArray", function(req, res) {
-   let sql;
-   let sqlParams;
-   switch (req.query.action) {
-      case "add":
-         sql = "INSERT INTO albums (title, artist, coverImage, price, genre, tag1, tag2) VALUES (?, ?, ?, ?, ?, ?, ?)";
-         sqlParams = [req.query.title, req.query.artist, req.query.coverImage, req.query.price, req.query.genre, req.query.tag1, req.query.tag2];
-         break;
-      case "update":
-         sql = "INSERT INTO albums (title, artist, coverImage, price, genre, tag1, tag2) VALUES (?, ?, ?, ?, ?, ?, ?)";
-         sqlParams = [req.query.title, req.query.artist, req.query.coverImage, req.query.price, req.query.genre, req.query.tag1, req.query.tag2];
-         break;
-         //case "delete":
-         //sql = "DELETE FROM albums WHERE albumID = ?";
-         //sqlParams = [req.query.albumID];
-         //break;
-   } // switch
+   let sql = "INSERT INTO albums (title, artist, coverImage, price, genre, tag1, tag2) VALUES (?, ?, ?, ?, ?, ?, ?)";
+   let sqlParams = [req.query.title, req.query.artist, req.query.coverImage, req.query.price, req.query.genre, req.query.tag1, req.query.tag2];
+
    pool.query(sql, sqlParams, function(err, rows, fields) {
       if (err) throw err;
       console.log(rows);
       res.send(rows.affectedRows.toString());
    });
 }); // api/updateAlbumsArray
+
+app.get("/api/deleteAlbumsArray", function(req, res) {
+   let sql = "DELETE FROM albums WHERE albumID = ?";
+   let sqlParams = [req.query.albumID];
+
+   pool.query(sql, sqlParams, function(err, rows, fields) {
+      if (err) throw err;
+      console.log(rows);
+      res.send(rows.affectedRows.toString());
+   });
+}); // api/deleteAlbumsArray
 
 app.get("/api/generateReportY", function(req, res){
  

@@ -1,21 +1,21 @@
 {
-  "name": "cst336-project-v.4.6",
+  "name": "brian-project-5.4",
   "version": "1.0.0",
-  "description": "Brian's version 4.6 for project",
+  "description": "",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/brian-lo0-127001/CST336-project-v.4.6.git"
+    "url": "git+https://github.com/brian-lo0-127001/brian-project-5.4.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/brian-lo0-127001/CST336-project-v.4.6/issues"
+    "url": "https://github.com/brian-lo0-127001/brian-project-5.4/issues"
   },
-  "homepage": "https://github.com/brian-lo0-127001/CST336-project-v.4.6#readme",
+  "homepage": "https://github.com/brian-lo0-127001/brian-project-5.4#readme",
   "dependencies": {
     "bcrypt": "^5.0.0",
     "ejs": "^3.1.3",
