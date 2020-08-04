@@ -14,12 +14,7 @@ $(document).ready(function() {
     function generateReportX(){
         alert("Generating Report X...");
     }
-    function generateReportY(){
-        alert("Generating Report Y...");
-    }
-    function generateReportZ(){
-        alert("Generating Report Z...");
-    }
+    
     function generateReportY(){
         $.ajax({
         method: "GET",

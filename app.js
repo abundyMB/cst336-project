@@ -166,6 +166,28 @@ app.get("/api/updateAlbumsArray", function(req, res) {
    });
 }); // api/updateAlbumsArray
 
+app.get("/api/generateReportY", function(req, res){
+ 
+ let sql = "SELECT AVG(orderTotal) AS orderAvg FROM orders";
+ 
+ pool.query(sql, function(err, rows, fields){
+  if (err) throw err;
+  console.log(rows);
+  res.send(rows);
+  
+ });
+});
+
+app.get("/api/generateReportZ", function(req, res){
+ 
+ let sql = "SELECT AVG(price) AS averagePrice FROM albums";
+ 
+ pool.query(sql, function(err, rows, fields){
+  if (err) throw err;
+  console.log(rows);
+  res.send(rows);
+ });
+});
 
 //start server
 app.listen(process.env.PORT, process.env.IP, function() {
