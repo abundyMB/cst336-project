@@ -1,90 +1,53 @@
 $(document).ready(function() {
     
-    //Global Variables
-                
-    const xButton = document.getElementById('x-btn');
-    const yButton = document.getElementById('y-btn');
-    const zButton = document.getElementById('z-btn');
-               
-    //Event Listeners
-    xButton.addEventListener('click', generateReportX); 
-    yButton.addEventListener('click', generateReportY);
-    zButton.addEventListener('click', generateReportZ);
+    $("#x-btn").on("click", generateReportX);
+    $("#avgOrd-btn").on("click", generateAvgOrderReport);
+    $("#avgAlb-btn").on("click", generateAvgAlbumReport);
+    
+    // $("#reportTitle").html("");
+    // $("#reportBody").html("");
     
     function generateReportX(){
-        alert("Generating Report X...");
+        $("#reportTitle").html("Report X");
+        $("#reportBody").html(`Text to go here`);
     }
     
-    function generateReportY(){
+    function generateAvgOrderReport(){
         $.ajax({
         method: "GET",
-            url: "/api/generateReportY",
+            url: "/api/avgOrderReport",
             type: "JSON",
 
             success: function(data, status) {
                 console.log("Report Y");
                 console.log(data);
-                data.forEach(function(elem, i) {
-                    //using // let sql = "SELECT title, price FROM albums";
-                    // albumObject = { title: elem.title, price: elem.price};
-                    // albumsArray[i] = albumObject;
-                    
-                    
-                    //   albumObject = {title: elem.title, price: elem.price};
-                    //  albumObject = {AveragePrice: elem.averagePrice};
-
-                    //   console.log($("#tempReportZText")) 
-                    
-                    // albumObject = {Price: elem.averagePrice };
-                    // albumsArray[i] = albumObject;
-                    // console.log(albumObject);
-                    
-                    // console.log(data);
-                    
-                    //   console.log($("#tempReportZText").append(`numberofSearches: elem.count`));
-                    //   console.log((`numberofSearches: elem.count`))
-                    //  console.log($("#tempReportZText").append(`numberofSearches: elem.count`));
-                    //  res.render($("#tempReportZText"), {"numberofSearches": elem.count});
-                });
+                
+                let orderAvg = data[0].orderAvg.toFixed(2);
+                console.log("Order Average: " + orderAvg);
+                
+                $("#reportTitle").html("Average Order Cost");
+                $("#reportBody").html(`Across all orders, we have found the total amount customers
+                    paid for their order, on average, to be: $${orderAvg}.`);
             }
         }); //ajax
     }
-    function generateReportZ(){
+    function generateAvgAlbumReport(){
         
         $.ajax({
         method: "GET",
-            url: "/api/generateReportZ",
+            url: "/api/avgAlbumReport",
             type: "JSON",
 
             success: function(data, status) {
-                // console.log("Status is " + status);
-                // console.log(data);
-                // alert("Generating Report Z...");
-                // console.log("Average Price ....");
-                console.log("Report Z");
+                console.log("Report Y");
                 console.log(data);
-                data.forEach(function(elem, i) {
-                    //using // let sql = "SELECT title, price FROM albums";
-                    // albumObject = { title: elem.title, price: elem.price};
-                    // albumsArray[i] = albumObject;
-                    
-                    
-                    //   albumObject = {title: elem.title, price: elem.price};
-                    //  albumObject = {AveragePrice: elem.averagePrice};
-
-                    //   console.log($("#tempReportZText")) 
-                    
-                    // albumObject = {Price: elem.averagePrice };
-                    // albumsArray[i] = albumObject;
-                    // console.log(albumObject);
-                    
-                    // console.log(data);
-                    
-                    //   console.log($("#tempReportZText").append(`numberofSearches: elem.count`));
-                    //   console.log((`numberofSearches: elem.count`))
-                    //  console.log($("#tempReportZText").append(`numberofSearches: elem.count`));
-                    //  res.render($("#tempReportZText"), {"numberofSearches": elem.count});
-                });
+                
+                let avgPrice = data[0].averagePrice.toFixed(2);
+                console.log("Average Album Price: " + avgPrice);
+                
+                $("#reportTitle").html("Average Album Price");
+                $("#reportBody").html(`The average price of all albums offered by Fidelity Audio
+                is: $${avgPrice}.`);
             }
         }); //ajax
     }
