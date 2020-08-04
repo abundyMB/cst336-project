@@ -12,13 +12,86 @@ $(document).ready(function() {
     zButton.addEventListener('click', generateReportZ);
     
     function generateReportX(){
-        alert("Generating Report X...")
+        alert("Generating Report X...");
     }
     function generateReportY(){
-        alert("Generating Report Y...")
+        alert("Generating Report Y...");
     }
     function generateReportZ(){
-        alert("Generating Report Z...")
+        alert("Generating Report Z...");
+    }
+    function generateReportY(){
+        $.ajax({
+        method: "GET",
+            url: "/api/generateReportY",
+            type: "JSON",
+
+            success: function(data, status) {
+                console.log("Report Y");
+                console.log(data);
+                data.forEach(function(elem, i) {
+                    //using // let sql = "SELECT title, price FROM albums";
+                    // albumObject = { title: elem.title, price: elem.price};
+                    // albumsArray[i] = albumObject;
+                    
+                    
+                    //   albumObject = {title: elem.title, price: elem.price};
+                    //  albumObject = {AveragePrice: elem.averagePrice};
+
+                    //   console.log($("#tempReportZText")) 
+                    
+                    // albumObject = {Price: elem.averagePrice };
+                    // albumsArray[i] = albumObject;
+                    // console.log(albumObject);
+                    
+                    // console.log(data);
+                    
+                    //   console.log($("#tempReportZText").append(`numberofSearches: elem.count`));
+                    //   console.log((`numberofSearches: elem.count`))
+                    //  console.log($("#tempReportZText").append(`numberofSearches: elem.count`));
+                    //  res.render($("#tempReportZText"), {"numberofSearches": elem.count});
+                });
+            }
+        }); //ajax
+    }
+    function generateReportZ(){
+        
+        $.ajax({
+        method: "GET",
+            url: "/api/generateReportZ",
+            type: "JSON",
+
+            success: function(data, status) {
+                // console.log("Status is " + status);
+                // console.log(data);
+                // alert("Generating Report Z...");
+                // console.log("Average Price ....");
+                console.log("Report Z");
+                console.log(data);
+                data.forEach(function(elem, i) {
+                    //using // let sql = "SELECT title, price FROM albums";
+                    // albumObject = { title: elem.title, price: elem.price};
+                    // albumsArray[i] = albumObject;
+                    
+                    
+                    //   albumObject = {title: elem.title, price: elem.price};
+                    //  albumObject = {AveragePrice: elem.averagePrice};
+
+                    //   console.log($("#tempReportZText")) 
+                    
+                    // albumObject = {Price: elem.averagePrice };
+                    // albumsArray[i] = albumObject;
+                    // console.log(albumObject);
+                    
+                    // console.log(data);
+                    
+                    //   console.log($("#tempReportZText").append(`numberofSearches: elem.count`));
+                    //   console.log((`numberofSearches: elem.count`))
+                    //  console.log($("#tempReportZText").append(`numberofSearches: elem.count`));
+                    //  res.render($("#tempReportZText"), {"numberofSearches": elem.count});
+                });
+            }
+        }); //ajax
     }
     
 });//end

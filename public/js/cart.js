@@ -23,7 +23,6 @@ $(document).ready(function(){
                 let newString = string.replace('[{"albumIDs":"', "").replace(' "}]', "").split(' ');
                 console.log(newString);
                 
-                console.log("Cart IDs");
                 //fill cart with albumIDs
                 for (let i = 0; i < newString.length; i++){
                     cartIDs.push(Number(newString[i]));
@@ -48,8 +47,6 @@ $(document).ready(function(){
                   albumObject = {albumID: elem.albumID, title: elem.title, artist: elem.artist, coverImage: elem.coverImage, price: elem.price};
                   albumsArray[i] = albumObject;
                 });
-                console.log("Albums array");
-                console.dir(albumsArray);
             } 
         });//ajax
     }//populateAlbumArray()
@@ -57,12 +54,8 @@ $(document).ready(function(){
     //populate customerCart based on album IDs added to cart in index.ejs and stored in localStorage
     populateCart();
     function populateCart(){
-      console.log("Populate cart");
-      for (let i = 0; i < cartIDs.length; i++) {
-        customerCart.push(albumsArray[cartIDs[i]-1]);
-        console.log(albumsArray[cartIDs[i]-1]);
-      }
-    }//populateCart
+      for (let i = 0; i < cartIDs.length; i++) customerCart.push(albumsArray[cartIDs[i]-1]);
+    };//populateCart
 
     //update cart
     updateCart();
@@ -70,11 +63,8 @@ $(document).ready(function(){
         
         // Clear contents of cart.
         $("#cartList").html("");
-        console.log("Customer cart value");
-        console.log(customerCart);
-        console.log("For Each function in cart.js");
+        
         customerCart.forEach(function(element, i){
-            console.log(element);
             $("#cartList").append(`${element.coverImage} <br /> Artist: ${element.artist} Title: ${element.title} Price: $${element.price} <br />`);   
             $("#cartList").append(`<button value=${i} type="button" class="btn btn-warning remove"> Remove Item </button> <br /> <br />`);
         });
