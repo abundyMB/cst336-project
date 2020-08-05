@@ -19,7 +19,6 @@ $(document).ready(function() {
             type: "JSON",
 
             success: function(data, status) {
-                console.log("Report Y");
                 console.log(data);
                 
                 let orderAvg = data[0].orderAvg.toFixed(2);
@@ -39,7 +38,6 @@ $(document).ready(function() {
             type: "JSON",
 
             success: function(data, status) {
-                console.log("Report Y");
                 console.log(data);
                 
                 let avgPrice = data[0].averagePrice.toFixed(2);
@@ -51,5 +49,4 @@ $(document).ready(function() {
             }
         }); //ajax
     }
-    
 });//end

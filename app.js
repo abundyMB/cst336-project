@@ -7,7 +7,6 @@ const pool = require('./dbPool.js');
 
 app.set("view engine", "ejs");
 app.use(express.static("public"));
-// app.engine('html', require('ejs').renderFile);
 
 app.use(session({
    secret: "top secret!",
@@ -19,19 +18,19 @@ app.use(express.urlencoded({ extended: true }));
 
 //***View routes*** 
 app.get("/", function(req, res) {
-   res.render("index.ejs");
+   res.render("index.ejs", {"username": req.session.adminUsername});
 });
 
 app.get("/cart", function(req, res) {
-   res.render("cart.ejs");
+   res.render("cart.ejs", {"username": req.session.adminUsername});
 });
 
 app.get("/login", function(req, res) {
-   res.render("login.ejs");
+   res.render("login.ejs", {"username": req.session.adminUsername});
 });
 
 app.get("/signup", function(req, res) {
-   res.render("signup.ejs");
+   res.render("signup.ejs", {"username": req.session.adminUsername});
 });
 
 // Still needs to be built.
@@ -41,19 +40,19 @@ app.get("/myAccount", function(req, res) {
 
 // Only allows admin to be accessed if the user is signed in.
 // TODO: isAuth removed to speed up tests.
-// app.get("/admin", isAuthenticated, function(req, res) {
-app.get("/admin", function(req, res) {
-   res.render("admin.ejs");
+app.get("/admin", isAuthenticated, function(req, res) {
+// app.get("/admin", function(req, res) {
+   res.render("admin.ejs", {"username": req.session.adminUsername});
 });
 
 // TODO: isAuth removed to speed up tests.
-// app.get("/reports", isAuthenticated, function(req, res) {
-app.get("/reports", function(req, res) {
-   res.render("reports.ejs");
+app.get("/reports", isAuthenticated, function(req, res) {
+// app.get("/reports", function(req, res) {
+   res.render("reports.ejs", {"username": req.session.adminUsername});
 });
 
 app.get("/signup", function(req, res) {
-   res.render("signup.ejs");
+   res.render("signup.ejs", {"username": req.session.adminUsername});
 });
 
 // Still needs to be built.
@@ -64,7 +63,7 @@ app.get("/thankYou", function(req, res) {
 // Likely will be "hidden" page in final project. Currently accessible for
 // testing purposes.
 app.get("/adminLogin", function(req, res) {
-   res.render("adminLogin.ejs");
+   res.render("adminLogin.ejs", {"username": req.session.adminUsername});
 });
 
 // Logs out of current session. 
@@ -78,7 +77,8 @@ app.post("/", async function(req, res) {
    let username = req.body.adminuser;
    let password = req.body.adminpwd;
 
-   let result = await checkUsername(username);
+   let result = await checkUsername(username, req);
+   console.dir("Result: ");
    console.dir(result);
    let hashedPwd = "";
 
@@ -92,7 +92,7 @@ app.post("/", async function(req, res) {
    if (passwordMatch) {
       console.log("Now signed in as admin");
       req.session.authenticated = true;
-      res.render("admin");
+      res.render("admin", {"username": req.session.adminUsername});
    }
    else {
       console.log("No match");
@@ -204,12 +204,22 @@ app.listen(process.env.PORT, process.env.IP, function() {
 });
 
 // Verify password is valid. Currently only for admin.
-function checkUsername(username) {
+function checkUsername(username, req) {
    let sql = "SELECT * FROM admin WHERE username = ? ";
    return new Promise(function(resolve, reject) {
       pool.query(sql, [username], function(err, rows, fields) {
          if (err) throw err;
          console.log("Rows found: " + rows.length);
+         console.log(rows);
+         
+         // Save adminID and username if there is a match.
+         if (rows.length == 1) {
+            req.session.adminID = rows[0].adminID;
+            req.session.adminUsername = rows[0].username;
+            console.log("Req adminID: " + req.session.adminID);
+            console.log("Req username: " + req.session.adminUsername);
+         }
+         
          resolve(rows);
       });
    });
