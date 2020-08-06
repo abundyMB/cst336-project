@@ -130,6 +130,18 @@ app.get("/api/getCart", function(req, res) {
       res.send(rows);
    });
 }); //api/getCart
+
+//getMostRecentCart API route gets the cartID of the most recent cart
+app.get("/api/getMostRecentCart", function(req, res) {
+   let sql = 'SELECT cartID FROM cart ORDER BY cartID DESC LIMIT 1';
+
+   pool.query(sql, function(err, rows, fields) {
+      if (err) throw err;
+      res.send(rows);
+   });
+}); //api/getCart
+
+
  
 //submitOrder adds the customer order to the orders table
 app.get("/api/submitOrder", function(req, res) {

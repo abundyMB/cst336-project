@@ -22,12 +22,25 @@ $(document).ready(function(){
                 let string = JSON.stringify(data);
                 let newString = string.replace('[{"albumIDs":"', "").replace(' "}]', "").split(' ');
                 console.log(newString);
-                
+                console.log("Data[0]: " + data[0]);
+                console.log("CardIDS Nan: " + isNaN(cartIDs[0]));
                 //fill cart with albumIDs
-                for (let i = 0; i < newString.length; i++){
-                    cartIDs.push(Number(newString[i]));
-                    console.log(cartIDs[i]);
+                if (data[0] !== undefined) {
+                       console.log("Data added");
+                    if (isNaN(cartIDs[0]) || newString.includes("undefined")) {
+                        delete cartIDs[0];
+                        newString = "";
+                        setCart(newString, 0);
+                    }
+                    else {
+                        for (let i = 0; i < newString.length; i++){
+                            cartIDs.push(Number(newString[i]));
+                            console.log(cartIDs[i]);
+                        }
+                    }
                 }
+                
+                console.log("newString: " + newString);
             }//success
         });//ajax
     }//getCart()
@@ -42,7 +55,7 @@ $(document).ready(function(){
             async: false,
             
             success: function(data, status){
-
+                console.log(data);
                 data.forEach(function(elem, i){
                   albumObject = {albumID: elem.albumID, title: elem.title, artist: elem.artist, coverImage: elem.coverImage, price: elem.price};
                   albumsArray[i] = albumObject;
@@ -54,8 +67,10 @@ $(document).ready(function(){
     //populate customerCart based on album IDs added to cart in index.ejs and stored in localStorage
     populateCart();
     function populateCart(){
-      for (let i = 0; i < cartIDs.length; i++) customerCart.push(albumsArray[cartIDs[i]-1]);
-    };//populateCart
+      for (let i = 0; i < cartIDs.length; i++) {customerCart.push(albumsArray[cartIDs[i]-1]);
+      console.log("CartIDS: " + cartIDs[i]); }
+      console.log("CartIDS length : " + cartIDs.length);
+    }//populateCart
 
     //update cart
     updateCart();
@@ -64,10 +79,14 @@ $(document).ready(function(){
         // Clear contents of cart.
         $("#cartList").html("");
         
+        console.log("Cartlength " + customerCart.length);
+        console.log("Customer cart " + customerCart);
         customerCart.forEach(function(element, i){
             $("#cartList").append(`${element.coverImage} <br /> Artist: ${element.artist} Title: ${element.title} Price: $${element.price} <br />`);   
             $("#cartList").append(`<button value=${i} type="button" class="btn btn-warning remove"> Remove Item </button> <br /> <br />`);
         });
+        console.log(customerCart);
+        console.log(cartIDs);
         // Update total of all displayed elements.
         calculateTotals();
     } //update cart
@@ -97,10 +116,10 @@ $(document).ready(function(){
     
     //add function to remove items from cart
     $("#cartList").on("click",".remove", function() {
-        itemID = $(this).val();
-        
-        delete customerCart[itemID];
+        let itemID = $(this).val();
+        console.log("Clickoff: " + customerCart[itemID].albumID);
         console.log( $(this).val() );
+        removeAlbum(customerCart[itemID].albumID);
         
         // Update cart with new display and totals.
         updateCart();
@@ -150,5 +169,55 @@ $(document).ready(function(){
        });//ajax
     }
     
+    function removeAlbum(removeAlbumID) {
+    
+    console.log("Remove album ID: " + removeAlbumID);
+    console.log("Before removal");
+    console.log("Cart IDs: " + cartIDs);
+    console.log("Customer album: " + customerCart);
+    
+    
+    // Stringify cardIDs array to match albumIDs format in database.
+    let cartIDsString = "";
+    let removedAlbumIndex = -1;
+    // Add all cartIDs except one to be removed.
+    for (let i = 0; i < cartIDs.length; i++) {
+        if (removeAlbumID != cartIDs[i]) {
+            cartIDsString += cartIDs[i];
+            // Add space except for last ID.
+            if (i < (cartIDs.length - 1)) {
+                cartIDsString += " ";
+            }
+        }
+        // Store cartID with removed value to delete from array.
+        else {
+            removedAlbumIndex = i;
+        }
+    }
+    
+    delete customerCart[removedAlbumIndex];
+    delete cartIDs[removedAlbumIndex];
+    console.log("Cart IDs: " + cartIDs);
+    console.dir("Customer album: " + customerCart);
+    console.log("Removed ID list: " + cartIDsString);
+    console.log("CartIDS: " + cartIDs);
+    setCart(cartIDsString, 0);
+    }
+    
+    //API call to set customer cart in database once add to cart button is clicked
+   function setCart(albumIDs, customerID) {
+      $.ajax({
+         method: "GET",
+         url: "/api/setCart",
+         data: {
+            "albumIDs": albumIDs,
+            "customerID": customerID
+         },
+
+         success: function(data, status) {
+            console.log("Data from setCart" + data + "Status" + status);
+         }
+      }); //ajax
+   } //setCart()
 });//document ready
     
