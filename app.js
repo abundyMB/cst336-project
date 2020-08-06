@@ -130,9 +130,12 @@ app.get("/api/getCart", function(req, res) {
       res.send(rows);
    });
 }); //api/getCart
-
+ 
 //submitOrder adds the customer order to the orders table
 app.get("/api/submitOrder", function(req, res) {
+   // Delete contents of cart for active user.
+   deleteCart(req, res);
+   
    let sql = 'INSERT INTO orders (albumIDs, albumTitles, orderTotal) VALUES (?,?,?)';
    let sqlParams = [req.query.albumIDs, req.query.albumTitles, req.query.orderTotal];
 
@@ -245,4 +248,15 @@ function isAuthenticated(req, res, next) {
    else {
       next();
    }
+}
+
+function deleteCart(req, res) {
+   let sql = "DELETE FROM cart WHERE customerID = ?";
+   let sqlParams = 0;
+   // let sqlParams = [req.session.customerID];
+
+   pool.query(sql, sqlParams, function(err, rows, fields) {
+      if (err) throw err;
+      console.log(rows);
+   });
 }

@@ -1,11 +1,13 @@
 $(document).ready(function() {
    //global variables
    var albumsArray = []; //the array is now populated from the database using populateAlbumArray();
-   var customerCart = [];
    var albumIDsString = "";
 
    //API call using Ajax to populate albums array from database. Uses app.get("/api/populateAlbumsArray") route in App.js
    populateAlbumArray();
+   
+   // Get contents of current cart.
+   getCart();
 
    function populateAlbumArray() {
       $.ajax({
@@ -23,6 +25,43 @@ $(document).ready(function() {
          }
       }); //ajax
    } //populateAlbumArray()
+   
+    //API call to get cart albumIDs added in search.ejs
+    function getCart(){
+        $.ajax({
+            method: "GET",
+            url: "/api/getCart",
+            async: false,
+            
+            success: function(data, status){
+                let string = JSON.stringify(data);
+                console.log("Data[0]: " + data);
+                console.log("Data[0]: " + data[0]);
+                console.log("Status: " + status);
+                console.log("Sring: " + string);
+               
+                
+                //fill cart with albumIDs
+                if (!data) console.log("No data");
+                if (data[0] == undefined) console.log("Undefined");
+                if (data == null) console.log("Undefined");
+                if (string == "") console.log("String empty");
+                
+                if (data[0] !== undefined) {
+                   console.log("Data added");
+                    let newString = string.replace('[{"albumIDs":"', "").replace(' "}]', "").split(' ');
+                   console.log("Newstring: " + newString);
+                   console.log("Newstring length: " + newString.length);
+                   for (let i = 0; i < newString.length; i++) {
+                      albumIDsString += newString[i];
+                      albumIDsString += " ";
+                   } 
+                }
+                   
+                console.log("Album string: " + albumIDsString);
+            }//success
+        });//ajax
+    }//getCart()
 
    //API call to set customer cart in database once add to cart button is clicked
    function setCart(albumIDs, customerID) {
