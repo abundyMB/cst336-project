@@ -24,18 +24,15 @@ $(document).ready(function(){
                 
                 // Clean stringified JSON data.
                 let cleanString = "";
-                console.log("cart newstring");
                 let lastCharNumber = false;
                 for (let i = 0; i < string.length; i++) {
                     // Extract only the albumIDs.
                     if (!isNaN(string.charAt(i)) && string.charAt(i) != " ") {
                         cleanString += string.charAt(i);
                         lastCharNumber = true;
-                        console.log("String at " + i + ": " + string.charAt(i) + " isNum");
                     }
                     // Only add comma if last char was a number and curr is NaN.
                     else {
-                        console.log("String at " + i + ": " + string.charAt(i) + " notnum");
                         if (lastCharNumber) {
                             cleanString += ",";
                         }
@@ -45,23 +42,15 @@ $(document).ready(function(){
                 }
                 
                 // Remove final comma.
-                console.log("Cart cleanstring");
-                for (let i = 0; i < cleanString.length; i++) {
-                    console.log("String at " + i + ": " + cleanString.charAt(i));
-                }
                 if (cleanString.charAt(cleanString.length - 1) === ",")
                     cleanString = cleanString.slice(0, -1);
                 
                 // Convert cleaned string into array. Push values into global array.
                 let cleanArr = cleanString.split(",");
-                console.log("String " + string);
-                console.log("Cleanstring cart: " + cleanArr);
                 for (let i = 0; i < cleanArr.length; i++){
                     cartIDs.push(Number(cleanArr[i]));
                     console.log("ID: " + cartIDs[i]);
                 }
-                
-                console.log("CartID " + cartIDs);
             }//success
         });//ajax
     }//getCart()
@@ -76,9 +65,7 @@ $(document).ready(function(){
             async: false,
             
             success: function(data, status){
-                console.log(data);
                 data.forEach(function(elem, i){
-                  console.log("Album at " + i + " = #" + elem.albumID + " " + elem.title);
                   albumsArray[i] = {albumID: elem.albumID, title: elem.title, artist: elem.artist, coverImage: elem.coverImage, price: elem.price};
                 });
             } 
@@ -95,7 +82,6 @@ $(document).ready(function(){
                     break;
                 }
             }
-             
         }
     }//populateCart
 
@@ -103,22 +89,15 @@ $(document).ready(function(){
     updateCart();
     function updateCart() {
         
-        console.log("Customer cart titles");
-        // for (let i = 0; i < customerCart.length; i++) {
-        //     console.log(customerCart[i].title);
-        // }
         // Clear contents of cart.
         $("#cartList").html("");
-        console.log("Albums array:" + albumsArray.length);
-        console.log("Cartlength " + customerCart.length);
-        console.log("Customer cart " + customerCart);
+        
+        // Display albums and Remove buttons.
         customerCart.forEach(function(element, i){
-            console.log(customerCart[i].title);
             $("#cartList").append(`${element.coverImage} <br /> Artist: ${element.artist} Title: ${element.title} Price: $${element.price} <br />`);   
             $("#cartList").append(`<button value=${i} type="button" class="btn btn-warning remove"> Remove Item </button> <br /> <br />`);
         });
-        console.log(customerCart);
-        console.log(cartIDs);
+        
         // Update total of all displayed elements.
         calculateTotals();
     } //update cart
@@ -149,8 +128,6 @@ $(document).ready(function(){
     //add function to remove items from cart
     $("#cartList").on("click",".remove", function() {
         let itemID = $(this).val();
-        console.log("Clickoff: " + customerCart[itemID].albumID);
-        console.log( $(this).val() );
         removeAlbum(customerCart[itemID].albumID);
         
         // Update cart with new display and totals.

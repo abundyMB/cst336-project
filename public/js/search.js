@@ -99,7 +99,6 @@ $(document).ready(function() {
             $("#searchResult").append(`${albumsArray[i].coverImage} <br />`);
             $("#searchResult").append(`<strong> Artist: </strong> ${albumsArray[i].artist} <strong> Album: </strong> <i> ${albumsArray[i].title} </i> <strong> <br /> Price: </strong> $${albumsArray[i].price} <br /> <br />`);
             $("#searchResult").append(`<button value=${albumsArray[i].albumID} class="btn btn-outline-secondary"> Add to Cart </button> <br />`);
-            console.log("Album IDS:" + albumsArray[i].albumID);
             itemFound = true;
          }
       } //close for
@@ -116,10 +115,7 @@ $(document).ready(function() {
       albumIDsString += " ";
       albumIDsString += value;
       
-      console.log("Add " + albumIDsString);
-
       setCart(albumIDsString, 0);
-      console.log(albumIDsString);
    });
 
 }); //document ready
