@@ -1,15 +1,29 @@
 $(document).ready(function() {
     
-    $("#x-btn").on("click", generateReportX);
+    $("#totOrd-btn").on("click", generateTotalSalesReport);
     $("#avgOrd-btn").on("click", generateAvgOrderReport);
     $("#avgAlb-btn").on("click", generateAvgAlbumReport);
     
     // $("#reportTitle").html("");
     // $("#reportBody").html("");
     
-    function generateReportX(){
-        $("#reportTitle").html("Report X");
-        $("#reportBody").html(`Text to go here`);
+    function generateTotalSalesReport(){
+        $.ajax({
+        method: "GET",
+            url: "/api/totalSalesOrderReport",
+            type: "JSON",
+
+            success: function(data, status) {
+                console.log("Report X");
+                console.log(data);
+
+                let totalSales = data[0].totalSales.toFixed(2);
+                console.log("Total Sales: " + totalSales);
+
+                $("#reportTitle").html("Total Sales");
+                $("#reportBody").html(`The cumulative amount of sales to date is: $${totalSales}.`);
+            }
+        }); //ajax
     }
     
     function generateAvgOrderReport(){

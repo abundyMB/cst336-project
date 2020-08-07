@@ -189,6 +189,17 @@ app.get("/api/deleteAlbumsArray", function(req, res) {
    });
 }); // api/deleteAlbumsArray
 
+app.get("/api/totalSalesOrderReport", function(req, res){
+ 
+ let sql = "SELECT SUM(orderTotal) AS totalSales FROM orders";
+ 
+ pool.query(sql, function(err, rows, fields){
+  if (err) throw err;
+  console.log(rows);
+  res.send(rows);
+ });
+});
+
 app.get("/api/avgOrderReport", function(req, res){
  
  let sql = "SELECT AVG(orderTotal) AS orderAvg FROM orders";
