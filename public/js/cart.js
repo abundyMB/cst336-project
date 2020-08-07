@@ -78,6 +78,7 @@ $(document).ready(function(){
             success: function(data, status){
                 console.log(data);
                 data.forEach(function(elem, i){
+                  console.log("Album at " + i + " = #" + elem.albumID + " " + elem.title);
                   albumsArray[i] = {albumID: elem.albumID, title: elem.title, artist: elem.artist, coverImage: elem.coverImage, price: elem.price};
                 });
             } 
@@ -88,8 +89,13 @@ $(document).ready(function(){
     populateCart();
     function populateCart(){
         for (let i = 0; i < cartIDs.length; i++) {
-            customerCart.push(albumsArray[cartIDs[i]-1]);
-            console.log("CartIDS: " + cartIDs[i]); 
+            for (let j = 0; i < albumsArray.length; j++) {
+                if (albumsArray[j].albumID == cartIDs[i]) {
+                    customerCart.push(albumsArray[j]);
+                    break;
+                }
+            }
+             
         }
     }//populateCart
 
@@ -97,12 +103,17 @@ $(document).ready(function(){
     updateCart();
     function updateCart() {
         
+        console.log("Customer cart titles");
+        // for (let i = 0; i < customerCart.length; i++) {
+        //     console.log(customerCart[i].title);
+        // }
         // Clear contents of cart.
         $("#cartList").html("");
-        
+        console.log("Albums array:" + albumsArray.length);
         console.log("Cartlength " + customerCart.length);
         console.log("Customer cart " + customerCart);
         customerCart.forEach(function(element, i){
+            console.log(customerCart[i].title);
             $("#cartList").append(`${element.coverImage} <br /> Artist: ${element.artist} Title: ${element.title} Price: $${element.price} <br />`);   
             $("#cartList").append(`<button value=${i} type="button" class="btn btn-warning remove"> Remove Item </button> <br /> <br />`);
         });

@@ -134,7 +134,6 @@ $(document).ready(function() {
 
 
    function deleteAlbum() {
-      var deletion = document.getElementById('delete-album').value;
       let albumDeleteID = $("#delete-album").val();
       console.log("Album deleteID: " + albumDeleteID);
        
