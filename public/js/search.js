@@ -19,8 +19,7 @@ $(document).ready(function() {
          success: function(data, status) {
 
             data.forEach(function(elem, i) {
-               albumObject = { albumID: elem.albumID, title: elem.title, artist: elem.artist, coverImage: elem.coverImage, price: elem.price };
-               albumsArray[i] = albumObject;
+               albumsArray[i] = { albumID: elem.albumID, title: elem.title, artist: elem.artist, coverImage: elem.coverImage, price: elem.price };
             });
          }
       }); //ajax
@@ -35,27 +34,22 @@ $(document).ready(function() {
             
             success: function(data, status){
                 let string = JSON.stringify(data);
-                console.log("Data[0]: " + data);
-                console.log("Data[0]: " + data[0]);
-                console.log("Status: " + status);
-                console.log("Sring: " + string);
-               
+                let newString = string.replace('[{"albumIDs":"', "").replace(' "}]', "").split(' ').toString();
                 
-                //fill cart with albumIDs
-                if (!data) console.log("No data");
-                if (data[0] == undefined) console.log("Undefined");
-                if (data == null) console.log("Undefined");
-                if (string == "") console.log("String empty");
-                
-                if (data[0] !== undefined) {
-                   console.log("Data added");
-                    let newString = string.replace('[{"albumIDs":"', "").replace(' "}]', "").split(' ');
-                   console.log("Newstring: " + newString);
-                   console.log("Newstring length: " + newString.length);
-                   for (let i = 0; i < newString.length; i++) {
-                      albumIDsString += newString[i];
-                      albumIDsString += " ";
-                   } 
+                // Add cleaned string to global album IDs string.
+                let lastCharNumber = false;
+                for (let i = 0; i < newString.length; i++) {
+                    if (!isNaN(newString.charAt(i)) && newString.charAt(i) != " ") {
+                        albumIDsString += newString.charAt(i);
+                        lastCharNumber = true;
+                    }
+                    else {
+                        if (lastCharNumber) {
+                            albumIDsString += " ";
+                        }
+                        
+                        lastCharNumber = false;
+                    }
                 }
                    
                 console.log("Album string: " + albumIDsString);
@@ -95,7 +89,6 @@ $(document).ready(function() {
       $("#searchResult").html("");
 
       let itemFound = false;
-      let albumIDNum = 0;
       console.dir(albumsArray);
       //search albums and display results
       for (let i = 0; i < albumsArray.length; i++) {
@@ -106,7 +99,6 @@ $(document).ready(function() {
             $("#searchResult").append(`${albumsArray[i].coverImage} <br />`);
             $("#searchResult").append(`<strong> Artist: </strong> ${albumsArray[i].artist} <strong> Album: </strong> <i> ${albumsArray[i].title} </i> <strong> <br /> Price: </strong> $${albumsArray[i].price} <br /> <br />`);
             $("#searchResult").append(`<button value=${albumsArray[i].albumID} class="btn btn-outline-secondary"> Add to Cart </button> <br />`);
-            albumIDNum = albumsArray[i].albumID;
             console.log("Album IDS:" + albumsArray[i].albumID);
             itemFound = true;
          }
@@ -121,8 +113,10 @@ $(document).ready(function() {
    $("#searchResult").on("click", ".btn-outline-secondary", function() {
 
       let value = $(this).val();
-      albumIDsString += value;
       albumIDsString += " ";
+      albumIDsString += value;
+      
+      console.log("Add " + albumIDsString);
 
       setCart(albumIDsString, 0);
       console.log(albumIDsString);

@@ -13,6 +13,7 @@ $(document).ready(function(){
     //API call to get cart albumIDs added in search.ejs
     getCart();
     function getCart(){
+        
         $.ajax({
             method: "GET",
             url: "/api/getCart",
@@ -20,27 +21,47 @@ $(document).ready(function(){
             
             success: function(data, status){
                 let string = JSON.stringify(data);
-                let newString = string.replace('[{"albumIDs":"', "").replace(' "}]', "").split(' ');
-                console.log(newString);
-                console.log("Data[0]: " + data[0]);
-                console.log("CardIDS Nan: " + isNaN(cartIDs[0]));
-                //fill cart with albumIDs
-                if (data[0] !== undefined) {
-                       console.log("Data added");
-                    if (isNaN(cartIDs[0]) || newString.includes("undefined")) {
-                        delete cartIDs[0];
-                        newString = "";
-                        setCart(newString, 0);
+                
+                // Clean stringified JSON data.
+                let cleanString = "";
+                console.log("cart newstring");
+                let lastCharNumber = false;
+                for (let i = 0; i < string.length; i++) {
+                    // Extract only the albumIDs.
+                    if (!isNaN(string.charAt(i)) && string.charAt(i) != " ") {
+                        cleanString += string.charAt(i);
+                        lastCharNumber = true;
+                        console.log("String at " + i + ": " + string.charAt(i) + " isNum");
                     }
+                    // Only add comma if last char was a number and curr is NaN.
                     else {
-                        for (let i = 0; i < newString.length; i++){
-                            cartIDs.push(Number(newString[i]));
-                            console.log(cartIDs[i]);
+                        console.log("String at " + i + ": " + string.charAt(i) + " notnum");
+                        if (lastCharNumber) {
+                            cleanString += ",";
                         }
+                        
+                        lastCharNumber = false;
                     }
                 }
                 
-                console.log("newString: " + newString);
+                // Remove final comma.
+                console.log("Cart cleanstring");
+                for (let i = 0; i < cleanString.length; i++) {
+                    console.log("String at " + i + ": " + cleanString.charAt(i));
+                }
+                if (cleanString.charAt(cleanString.length - 1) === ",")
+                    cleanString = cleanString.slice(0, -1);
+                
+                // Convert cleaned string into array. Push values into global array.
+                let cleanArr = cleanString.split(",");
+                console.log("String " + string);
+                console.log("Cleanstring cart: " + cleanArr);
+                for (let i = 0; i < cleanArr.length; i++){
+                    cartIDs.push(Number(cleanArr[i]));
+                    console.log("ID: " + cartIDs[i]);
+                }
+                
+                console.log("CartID " + cartIDs);
             }//success
         });//ajax
     }//getCart()
@@ -57,8 +78,7 @@ $(document).ready(function(){
             success: function(data, status){
                 console.log(data);
                 data.forEach(function(elem, i){
-                  albumObject = {albumID: elem.albumID, title: elem.title, artist: elem.artist, coverImage: elem.coverImage, price: elem.price};
-                  albumsArray[i] = albumObject;
+                  albumsArray[i] = {albumID: elem.albumID, title: elem.title, artist: elem.artist, coverImage: elem.coverImage, price: elem.price};
                 });
             } 
         });//ajax
@@ -67,9 +87,10 @@ $(document).ready(function(){
     //populate customerCart based on album IDs added to cart in index.ejs and stored in localStorage
     populateCart();
     function populateCart(){
-      for (let i = 0; i < cartIDs.length; i++) {customerCart.push(albumsArray[cartIDs[i]-1]);
-      console.log("CartIDS: " + cartIDs[i]); }
-      console.log("CartIDS length : " + cartIDs.length);
+        for (let i = 0; i < cartIDs.length; i++) {
+            customerCart.push(albumsArray[cartIDs[i]-1]);
+            console.log("CartIDS: " + cartIDs[i]); 
+        }
     }//populateCart
 
     //update cart
@@ -128,27 +149,27 @@ $(document).ready(function(){
     $("#placeOrder").on("click", function(event){
         let albumIDs = "";
         let albumTitles ="";
-        cartEmpty = true;
+        let cartEmpty = true;
         
         customerCart.forEach(function(elem){
-           if (elem != null) cartEmpty = false; 
+           if (elem != null) {
+            cartEmpty = false; 
+           }
         });
         
         if (cartEmpty) {
             $('#cartError').html('<p class="text-danger"> There are no items in your cart. </p>');
             event.preventDefault();
         }
-        
         else {
-        //build strings of albumIDs and albumTitles
-        customerCart.forEach(function(elem) {
+            //build strings of albumIDs and albumTitles
+            customerCart.forEach(function(elem) {
+                albumIDs += elem.albumID + ",";
+                albumTitles += elem.title + ",";
+                $('#cartError').html('<p class="text-success"> Order Placed! (Will redirect to Thank-You Page) </p>');
+            });
             
-            albumIDs += elem.albumID + ",";
-            albumTitles += elem.title + ",";
-            $('#cartError').html('<p class="text-success"> Order Placed! (Will redirect to Thank-You Page) </p>');
-        });
-        
-        submitOrder(albumIDs, albumTitles, total);
+            submitOrder(albumIDs, albumTitles, total);
         }
     });
     
@@ -171,37 +192,27 @@ $(document).ready(function(){
     
     function removeAlbum(removeAlbumID) {
     
-    console.log("Remove album ID: " + removeAlbumID);
-    console.log("Before removal");
-    console.log("Cart IDs: " + cartIDs);
-    console.log("Customer album: " + customerCart);
-    
-    
-    // Stringify cardIDs array to match albumIDs format in database.
-    let cartIDsString = "";
-    let removedAlbumIndex = -1;
-    // Add all cartIDs except one to be removed.
-    for (let i = 0; i < cartIDs.length; i++) {
-        if (removeAlbumID != cartIDs[i]) {
-            cartIDsString += cartIDs[i];
-            // Add space except for last ID.
-            if (i < (cartIDs.length - 1)) {
-                cartIDsString += " ";
+        // Stringify cardIDs array to match albumIDs format in database.
+        let cartIDsString = "";
+        let removedAlbumIndex = -1;
+        // Add all cartIDs except one to be removed.
+        for (let i = 0; i < cartIDs.length; i++) {
+            if (removeAlbumID != cartIDs[i]) {
+                cartIDsString += cartIDs[i];
             }
+            // Store cartID with removed value to delete from array.
+            else {
+                removedAlbumIndex = i;
+            }
+            cartIDsString += " "; 
         }
-        // Store cartID with removed value to delete from array.
-        else {
-            removedAlbumIndex = i;
-        }
-    }
-    
-    delete customerCart[removedAlbumIndex];
-    delete cartIDs[removedAlbumIndex];
-    console.log("Cart IDs: " + cartIDs);
-    console.dir("Customer album: " + customerCart);
-    console.log("Removed ID list: " + cartIDsString);
-    console.log("CartIDS: " + cartIDs);
-    setCart(cartIDsString, 0);
+        
+        // Delete related records.
+        delete customerCart[removedAlbumIndex];
+        delete cartIDs[removedAlbumIndex];
+        
+        // Update cart database with current cart contents.
+        setCart(cartIDsString, 0);
     }
     
     //API call to set customer cart in database once add to cart button is clicked

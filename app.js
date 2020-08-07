@@ -40,14 +40,14 @@ app.get("/myAccount", function(req, res) {
 
 // Only allows admin to be accessed if the user is signed in.
 // TODO: isAuth removed to speed up tests.
-app.get("/admin", isAuthenticated, function(req, res) {
-// app.get("/admin", function(req, res) {
+// app.get("/admin", isAuthenticated, function(req, res) {
+app.get("/admin", function(req, res) {
    res.render("admin.ejs", {"username": req.session.adminUsername});
 });
 
 // TODO: isAuth removed to speed up tests.
-app.get("/reports", isAuthenticated, function(req, res) {
-// app.get("/reports", function(req, res) {
+// app.get("/reports", isAuthenticated, function(req, res) {
+app.get("/reports", function(req, res) {
    res.render("reports.ejs", {"username": req.session.adminUsername});
 });
 
@@ -142,7 +142,6 @@ app.get("/api/getMostRecentCart", function(req, res) {
 }); //api/getCart
 
 
- 
 //submitOrder adds the customer order to the orders table
 app.get("/api/submitOrder", function(req, res) {
    // Delete contents of cart for active user.
@@ -198,7 +197,6 @@ app.get("/api/avgOrderReport", function(req, res){
   if (err) throw err;
   console.log(rows);
   res.send(rows);
-  
  });
 });
 
@@ -262,9 +260,11 @@ function isAuthenticated(req, res, next) {
    }
 }
 
+// Deletes entire cart table. Will delete only contents at customerID if 
+// sign-in is required.
 function deleteCart(req, res) {
    let sql = "DELETE FROM cart WHERE customerID = ?";
-   let sqlParams = 0;
+   let sqlParams = 0;   // Delete at customerID = 0. All records.
    // let sqlParams = [req.session.customerID];
 
    pool.query(sql, sqlParams, function(err, rows, fields) {
