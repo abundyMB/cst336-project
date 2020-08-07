@@ -40,9 +40,9 @@ $(document).ready(function() {
    // Find Album to update
    $("#find-form").on("submit", function() {
       $("#validationFdbk").html(""); //resets validation feedback
-      if (!isFindFormValid()) {
-         return;
-      }
+      // if (!isFindFormValid()) {
+      //    return;
+      // }
       //Test form submit
       console.log("Find Album Complete");
    });
@@ -58,11 +58,16 @@ $(document).ready(function() {
    });
 
    // Delete function
-   $("#del-form").on("submit", function() {
+   $("#delete-form").on("submit", function() {
       $("#validationFdbk").html(""); //resets validation feedback
+      console.log("Form delete");
       if (!isDeleteFormValid()) {
-         return;
+        event.preventDefault();
       }
+      
+     
+        
+      console.log("Delete form");
       deleteAlbum();
    });
 
@@ -130,9 +135,20 @@ $(document).ready(function() {
 
    function deleteAlbum() {
       var deletion = document.getElementById('delete-album').value;
-      albumsArray.splice(deletion.value, 1); // remove the album ID number from array
-      console.log("Deleted albumID:" + deletion.value);
-      deletion.value = " ";
+      let albumDeleteID = $("#delete-album").val();
+      console.log("Album deleteID: " + albumDeleteID);
+       
+      $.ajax({
+         method: "GET",
+         url: "/api/deleteAlbum",
+         data: {
+            "albumID": albumDeleteID
+         },
+
+         success: function(data, status) {
+            console.log("Data from setCart" + data + "Status" + status);
+         }
+      }); //ajax
    }
 
    // Form Validation Section

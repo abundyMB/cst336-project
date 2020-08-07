@@ -178,7 +178,7 @@ app.get("/api/updateAlbumsArray", function(req, res) {
    });
 }); // api/updateAlbumsArray
 
-app.get("/api/deleteAlbumsArray", function(req, res) {
+app.get("/api/deleteAlbum", function(req, res) {
    let sql = "DELETE FROM albums WHERE albumID = ?";
    let sqlParams = [req.query.albumID];
 
