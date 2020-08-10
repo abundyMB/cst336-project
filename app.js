@@ -16,6 +16,11 @@ app.use(session({
 
 app.use(express.urlencoded({ extended: true }));
 
+//start server
+app.listen(process.env.PORT, process.env.IP, function() {
+   console.log("Express server is running...");
+});
+
 //***View routes*** 
 app.get("/", function(req, res) {
    res.render("index.ejs", {"username": req.session.adminUsername});
@@ -33,21 +38,13 @@ app.get("/signup", function(req, res) {
    res.render("signup.ejs", {"username": req.session.adminUsername});
 });
 
-// Still needs to be built.
-app.get("/myAccount", function(req, res) {
-   res.send("My Account page currently under construction.");
-});
-
-// Only allows admin to be accessed if the user is signed in.
-// TODO: isAuth removed to speed up tests.
-// app.get("/admin", isAuthenticated, function(req, res) {
-app.get("/admin", function(req, res) {
+// Only allows admin to be accessed if an admin is signed in.
+app.get("/admin", isAuthenticated, function(req, res) {
    res.render("admin.ejs", {"username": req.session.adminUsername});
 });
 
-// TODO: isAuth removed to speed up tests.
-// app.get("/reports", isAuthenticated, function(req, res) {
-app.get("/reports", function(req, res) {
+// Only allows admin to be accessed if an admin is signed in.
+app.get("/reports", isAuthenticated, function(req, res) {
    res.render("reports.ejs", {"username": req.session.adminUsername});
 });
 
@@ -96,7 +93,9 @@ app.post("/", async function(req, res) {
    }
    else {
       console.log("No match");
-      res.render("index", { "loginError": true });
+      // Delete saved adminUser and adminID.
+      req.session.destroy();
+      res.render("adminLogin", { "loginError": true });
    }
 });
 
@@ -167,6 +166,31 @@ app.get("/api/addAlbumsArray", function(req, res) {
    });
 }); // api/addAlbumsArray
 
+//api to update album attributes in database
+app.get("/api/updateAlbumsDatabase", function(req, res){
+   let sql = "UPDATE albums SET title =?, artist =?, coverImage =?, price =?, genre=?, tag1=?, tag2=? WHERE albumID =?";
+   let sqlParams = [req.query.title, req.query.artist, req.query.coverImage, req.query.price,req.query.genre, req.query.tag1, req.query.tag2, req.query.albumID];
+   
+   pool.query(sql, sqlParams, function(err, rows, fields){
+      if (err) throw err;
+      console.log(rows.affectedRows.toString() );
+      res.send(rows.affectedRows.toString() );
+   });
+});
+//api/retrieveAlbumDetails
+
+app.get("/api/retrieveAlbumDetails", function(req, res){
+   let sql = "SELECT * FROM albums where albumID =?";
+   let sqlParams = [req.query.albumID];
+   
+   pool.query(sql, sqlParams, function(err, rows, fields){
+      if (err) throw err;
+      console.log(rows);
+      res.send(rows);
+   });
+});//api/retrieveAlbumDetails
+
+
 app.get("/api/updateAlbumsArray", function(req, res) {
    let sql = "INSERT INTO albums (title, artist, coverImage, price, genre, tag1, tag2) VALUES (?, ?, ?, ?, ?, ?, ?)";
    let sqlParams = [req.query.title, req.query.artist, req.query.coverImage, req.query.price, req.query.genre, req.query.tag1, req.query.tag2];
@@ -195,7 +219,6 @@ app.get("/api/totalSalesOrderReport", function(req, res){
  
  pool.query(sql, function(err, rows, fields){
   if (err) throw err;
-  console.log(rows);
   res.send(rows);
  });
 });
@@ -206,7 +229,6 @@ app.get("/api/avgOrderReport", function(req, res){
  
  pool.query(sql, function(err, rows, fields){
   if (err) throw err;
-  console.log(rows);
   res.send(rows);
  });
 });
@@ -217,14 +239,8 @@ app.get("/api/avgAlbumReport", function(req, res){
  
  pool.query(sql, function(err, rows, fields){
   if (err) throw err;
-  console.log(rows);
   res.send(rows);
  });
-});
-
-//start server
-app.listen(process.env.PORT, process.env.IP, function() {
-   console.log("Express server is running...");
 });
 
 // Verify password is valid. Currently only for admin.

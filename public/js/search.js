@@ -19,7 +19,8 @@ $(document).ready(function() {
          success: function(data, status) {
 
             data.forEach(function(elem, i) {
-               albumsArray[i] = { albumID: elem.albumID, title: elem.title, artist: elem.artist, coverImage: elem.coverImage, price: elem.price };
+               console.log("Album data is:" + data);
+               albumsArray[i] = { albumID: elem.albumID, title: elem.title, artist: elem.artist, coverImage: elem.coverImage, price: elem.price, genre: elem.genre};
             });
          }
       }); //ajax
@@ -47,12 +48,9 @@ $(document).ready(function() {
                         if (lastCharNumber) {
                             albumIDsString += " ";
                         }
-                        
                         lastCharNumber = false;
                     }
                 }
-                   
-                console.log("Album string: " + albumIDsString);
             }//success
         });//ajax
     }//getCart()
@@ -94,11 +92,13 @@ $(document).ready(function() {
       for (let i = 0; i < albumsArray.length; i++) {
          let titleBoolean = albumsArray[i].title.toLowerCase().includes(searchParam);
          let artistBoolean = albumsArray[i].artist.toLowerCase().includes(searchParam);
+         let genreBoolean = (albumsArray[i].genre == searchParam);
 
-         if (titleBoolean || artistBoolean || (albumsArray[i].price <= searchParam)) {
+         if (titleBoolean || artistBoolean || genreBoolean || (albumsArray[i].price <= searchParam)) {
             $("#searchResult").append(`${albumsArray[i].coverImage} <br />`);
-            $("#searchResult").append(`<strong> Artist: </strong> ${albumsArray[i].artist} <strong> Album: </strong> <i> ${albumsArray[i].title} </i> <strong> <br /> Price: </strong> $${albumsArray[i].price} <br /> <br />`);
-            $("#searchResult").append(`<button value=${albumsArray[i].albumID} class="btn btn-outline-secondary"> Add to Cart </button> <br />`);
+            $("#searchResult").append(`<strong> Artist: </strong> ${albumsArray[i].artist} <strong> Album: </strong> <i> ${albumsArray[i].title} </i> <strong> <br /> Price: </strong> $${albumsArray[i].price} <br />`);
+            $("#searchResult").append(`<button value=${albumsArray[i].albumID} class="btn btn-outline-secondary"> <strong> Add to Cart </strong> </button> <br /> <br />`);
+           
             itemFound = true;
          }
       } //close for
@@ -112,10 +112,10 @@ $(document).ready(function() {
    $("#searchResult").on("click", ".btn-outline-secondary", function() {
 
       let value = $(this).val();
+      $(this).html("Album Added!");
       albumIDsString += " ";
       albumIDsString += value;
       
       setCart(albumIDsString, 0);
    });
-
 }); //document ready

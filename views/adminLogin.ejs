@@ -10,13 +10,16 @@
             <br>
             <input class="textbox" type="password" id="admin-pswd" name="adminpwd">  
             <br />
-            <span class="text-danger" id="admin-login-error">Error Placeholder</span>
+            <span class="text-danger" id="admin-login-error"> </span>
             <br />
             <div class="text-center">
                 <input class="btn bg-warning text-dark" id="btn-admin-login" type="submit" value="Log In">
             </div>
             <br />
         </form>
+        
+        <!--Displays error when not signed in-->
+        <%- include('partials/loginError.ejs') %>
     </div>
     <br /><br />
 <%- include('partials/footer.ejs') %>

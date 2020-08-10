@@ -1,39 +1,18 @@
 $(document).ready(function() {
 
    // Global variables
-   // Test data
-   var albumsArray = [{ albumID: 0, title: "Abbey Road", artist: "The Beatles", coverImage: '<img src="/img/abbeyroad.jpg" alt="Abbey Road - Beatles">', price: 25.00 },
-      { albumID: 1, title: "Let There Be Cello", artist: "2 Cellos", coverImage: '<img src="/img/2cellos1.jpg" alt="Let There Be Cello - 2 Cellos">', price: 25.00 },
-      { albumID: 2, title: "Rubber Soul", artist: "The Beatles", coverImage: '<img src="/img/rubbersoul.jpg" alt="Rubber Soul - Beatles">', price: 25.00 },
-      { albumID: 3, title: "Extraterrestrial Live", artist: "Blue Öyster Cult", coverImage: '<img src="/img/etilive.jpg" alt="Extraterrestrial Live - Blue Öyster Cult">', price: 25.00 },
-      { albumID: 4, title: "Fire of Unknown Origin", artist: "Blue Öyster Cult", coverImage: '<img src="/img/fireofunknownorigin.jpg" alt="Fire of Unknown Origin - Blue Öyster Cult">', price: 25.00 },
-      { albumID: 5, title: "Dead Man's Party", artist: "Oingo Boingo", coverImage: '<img src="/img/deadmansparty.jpg" alt="Dead Man\'s Party - Oingo Boingo">', price: 25.00 },
-      { albumID: 6, title: "Only a Lad", artist: "Oingo Boingo", coverImage: '<img src="/img/onlyalad.jpg" alt="Only a Lad - Oingo Boingo">', price: 25.00 },
-      { albumID: 7, title: "Master of Puppets", artist: "Metallica", coverImage: '<img src="/img/masterofpuppets.jpg" alt="Master of Puppets - Metallica">', price: 25.00 },
-      { albumID: 8, title: "Dark Side of the Moon", artist: "Pink Floyd", coverImage: '<img src="/img/darksideofthemoon.jpg" alt="Dark Side of the Moon - Pink Floyd">', price: 25.00 },
-      { albumID: 9, title: "Kind of Blue", artist: "Miles Davis", coverImage: '<img src="/img/kindofblue.jpg" alt="Kind of Blue - Miles Davis">', price: 25.00 },
-      { albumID: 10, title: "Come Fly with Me", artist: "Frank Sinatra", coverImage: '<img src="/img/comeflywithme.jpg" alt="Come Fly with Me - Frank Sinatra">', price: 25.00 },
-      { albumID: 11, title: "Queen of Soul", artist: "Etta James", coverImage: '<img src="/img/queenofsoul.jpg" alt="Queen of Soul - Etta James">', price: 25.00 },
-      { albumID: 12, title: "Blues on Top of Blues", artist: "BB King", coverImage: '<img src="/img/bluesontopofblues.jpg" alt="Blues on Top of Blues - BB King">', price: 25.00 },
-      { albumID: 13, title: "The Emancipation of Mimi", artist: "Mariah Carey", coverImage: '<img src="/img/Mariah_Carey_The_Emancipation_of_Mimi.jpg" alt="The Emancipation of Mimi - Mariah Carey">', price: 25.00 },
-      { albumID: 14, title: "Merry Christmas", artist: "Mariah Carey", coverImage: '<img src="/img/Merry_Christmas_Mariah_Carey.jpg" alt="Merry Christmas - Mariah Carey">', price: 25.00 },
-      { albumID: 15, title: "Trilogy", artist: "The Weeknd", coverImage: '<img src="/img/The_Weeknd_Trilogy.jpg" alt="Trilogy -The Weeknd">', price: 25.00 },
-      { albumID: 16, title: "21", artist: "Adele", coverImage: '<img src="/img/Adele_21.jpg" alt="21 - Adele">', price: 25.00 },
-      { albumID: 17, title: "Unorthodox Jukebox", artist: "Bruno Mars", coverImage: '<img src="/img/BrunoMarsUJAlbumCover.jpg" alt="Unorthodox Jukebox - Bruno Mars">', price: 25.00 },
-      { albumID: 18, title: "I Used to Know Her", artist: "H.E.R.", coverImage: '<img src="/img/I_Used_To_Know_Her.jpg" alt="I Used to Know Her - H.E.R.">', price: 25.00 },
-      { albumID: 19, title: "Don't Smile at Me", artist: "Billie Eilish", coverImage: '<img src="/img/Billie_Eilish_Dont_Smile_at_Me.jpg" alt="Dont Smile at Me - Billie Eilish">', price: 25.00 }
-   ];
+   var updateAlbumID;//this is for the update album function
 
    // Event listeners.
 
-   // Add function
    $("#add-form").on("submit", function() {
 
-      $("#validationFdbk").html(""); //resets validation feedback
-      if (!isAddFormValid()) {
-         return;
-      }
-      //Test form submit
+      // $("#validationFdbk").html(""); //resets validation feedback
+      // if (!isAddFormValid()) {
+      //    return;
+      // }
+
+      addAlbum();
       console.log("Add Form Complete");
    });
 
@@ -62,11 +41,9 @@ $(document).ready(function() {
       $("#validationFdbk").html(""); //resets validation feedback
       console.log("Form delete");
       if (!isDeleteFormValid()) {
-        event.preventDefault();
+         event.preventDefault();
       }
-      
-     
-        
+
       console.log("Delete form");
       deleteAlbum();
    });
@@ -100,12 +77,32 @@ $(document).ready(function() {
    // ...end Listener Section
 
    // start Functions Section
+
    function addAlbum() {
-      var addition = document.getElementById('add-album').value;
-      // add
-      console.log("Added albumID:" + addition.value);
-      addition.value = " ";
-   }
+      let albumAddTitle = $("#add-title").val();
+      let albumAddArtist = $("#add-artist").val();
+      let albumAddCoverImage = $("#add-coverImage").val();
+      let albumAddPrice = $("#add-price").val();
+      let albumAddGenre = $("#add-genre").val();
+      let albumAddTag1 = $("#add-tag1").val();
+      let albumAddTag2 = $("#add-tag2").val();
+      $.ajax({
+         method: "get",
+         url: "/api/addAlbumsArray",
+         data: {
+            "title": albumAddTitle,
+            "artist": albumAddArtist,
+            "coverImage": albumAddCoverImage,
+            "price": albumAddPrice,
+            "genre": albumAddGenre,
+            "tag1": albumAddTag1,
+            "tag2": albumAddTag2
+         },
+         success: function(data, status) {
+            console.log("Add Album: " + data);
+         }
+      }); //ajax
+   } //addAlbum
 
    function updateAlbum() {
       var update = document.getElementById('update-album').value;
@@ -132,11 +129,10 @@ $(document).ready(function() {
       }); //ajax
    } //updateAlbum
 
-
    function deleteAlbum() {
       let albumDeleteID = $("#delete-album").val();
       console.log("Album deleteID: " + albumDeleteID);
-       
+
       $.ajax({
          method: "GET",
          url: "/api/deleteAlbum",
@@ -209,6 +205,51 @@ $(document).ready(function() {
       }
       return isValid;
    }
+   
+   //retrieve album data after albumID is entered 
+   $("#updateAlbum").on("change", function(){
+      updateAlbumID = $(this).val(); 
+      $.ajax({
+         method: "GET",
+         url: "/api/retrieveAlbumDetails",
+         data: {"albumID": updateAlbumID},
+         
+         success: function(data, status){
+            data.forEach(function(elem){
+               $("#update-title").attr("value", elem.title);
+               $("#update-artist").attr("value", elem.artist);
+               $("#update-coverImage").attr("value", elem.coverImage);
+               $("#update-price").attr("value", elem.price);
+               $("#update-genre").attr("value", elem.genre);
+               $("#update-tag1").attr("value", elem.tag1);
+               $("#update-tag2").attr("value", elem.tag2);
+            });//forEach()
+         }
+      });//ajax
+   });
+   
+   //submit album attributes for update album form
+   $("#updateAlbumAttributes").on("click", function(e){
+      
+     let albumID = updateAlbumID;
+     let title = $("#update-title").val();
+     let artist =$("#update-artist").val();
+     let coverImage =$("#update-coverImage").val();
+     let price =$("#update-price").val();
+     let genre =$("#update-genre").val();
+     let tag1 = $("#update-tag1").val();
+     let tag2 =$("#update-tag2").val();
+     
+     $.ajax({
+        method: "GET",
+        url: "/api/updateAlbumsDatabase",
+        data: {"title":title, "artist":artist, "coverImage":coverImage, "price":price, "albumID":albumID, "genre": genre, "tag1":tag1, "tag2":tag2},
+        
+        success: function(data, status){
+           console.log(status);
+        }
+     });//ajax  
+   });
    // ...end Form Validation section
    // ...end Functions section
-}); //end
+}); //end document ready

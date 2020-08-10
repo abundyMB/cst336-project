@@ -1,13 +1,13 @@
 <%- include('partials/header.ejs') %>
 <script src="/js/admin.js"></script>
 <nav class="navbar navbar-light bg-light">
-<a href="/admin">Administrator Options</a>
-<a href="/reports">Reports</a>
+<a href="/reports">Administrator Reports</a>
 </nav>
-<hr />
+
+<h1 class="jumbotron"> Administrator Options</h1>
 <div class="container">
-    <h2>Add new album to collection:</h2>
-    <form id="add-form" action="/admin">
+    <h2 class="jumbotron">Add New Album to Collection:</h2>
+    <form action="#" id="add-form" onsubmit="addAlbum()">
         <div class="form-group">
             <div class="col-xs-4">
                <span class="text-danger" id="title-artist-error"></span>
@@ -23,7 +23,7 @@
             <div class="col-xs-5">
                <label for="add-coverImage">Image file path:</label>
                <h3 id="validationFdbk" class="bg-danger text-white"></h3>
-               <input type="text" class="form-control" id="add-coverImage" name="add-coverImage" placeholder="Enter cover art image">
+               <input type="text" class="form-control" id="add-coverImage" name="add-coverImage" placeholder="Enter cover art image URL">
             </div>
             <div class="col-xs-2">
                <label for="add-price">Price:</label>
@@ -45,22 +45,21 @@
                <h3 id="validationFdbk" class="bg-danger text-white"></h3>
                <input type="text" class="form-control" id="add-tag2" name="add-tag2" placeholder="Enter tag 2">
             </div>
-            <button type="submit" class="btn btn-primary btn-success">Submit</button>
+            <button type="submit" class="btn btn-primary btn-success">Add Album</button>
         </div>
     </form>
 </div>
 <hr />
 
-<div>
-    <h2> Update an album </h2>
+<div class="container">
+    <h2 class="jumbotron"> Update an Album </h2>
     <div>
-        <input type="text" id="updateSearch" placeholder="Album name or artist">  <br />
+        <input type="text" id="updateAlbum" placeholder="Enter Album ID">  <br /><br />
         <span id="updateResult"></span>
     </div>
 </div>
 
 <div class="container">
-    <h4>Update information for selected album:</h4>
     <form id="update-form" action="/admin">
         <div class="form-group">
             <div class="col-xs-4">
@@ -105,13 +104,13 @@
                <input type="text" class="form-control" id="update-tag2" name="update-tag2" 
                     placeholder="Enter tag 2">
             </div>
-            <button type="submit" class="btn btn-primary btn-success">Submit</button>
+            <button type="submit" id="updateAlbumAttributes" class="btn btn-primary btn-success">Update Album </button>
         </div>
     </form>
 </div>
 <hr />
 <div class="container">
-   <h2>Delete an album:</h2>
+   <h2 class="jumbotron">Delete an Album:</h2>
    <form id="delete-form" action="/admin">
       <div class="form-group col-xs-2">
          <label for="delete-album">Album ID:</label>
@@ -119,7 +118,7 @@
             <input type="text" class="form-control" id="delete-album" name="delete-album" 
                 placeholder="Enter Album ID to delete">
       </div>
-      <button type="submit" class="btn btn-primary btn-danger">Submit</button>
+      <button type="submit" class="btn btn-primary btn-danger">Delete Album</button>
    </form>
 </div>
 <%- include('partials/footer.ejs') %>

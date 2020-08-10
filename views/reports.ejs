@@ -2,20 +2,31 @@
 <script src="/js/reports.js"></script>
 <nav class="navbar navbar-light bg-light">
 <a href="/admin">Administrator Options</a>
-<a href="/reports">Reports</a>
 </nav>
 <hr /> 
+<h1 class="jumbotron">Reports </h1>
 <div class="container" style="text-align:center">
-    <button id="totOrd-btn" type="button" class="btn btn-primary btn-success">Total Sales Report</button><br>
-   <button id="avgOrd-btn" type="button" class="btn btn-primary btn-success">Average Order Cost Report</button><br>
-   <button id="avgAlb-btn" type="button" class="btn btn-primary btn-success">Average Album Price Report</button><br>
-</div>
-    <hr />
-    <h3 id="reportTitle"></h3>
-    <br /><br />
-    
-    <p id="reportBody"></p>
-    <br /><br />
-    <hr />
+    <button id="totOrd-btn" type="button" class="btn btn-primary btn-success" data-toggle="modal" data-target=".modal">Total Sales Report</button><br>
+   <button id="avgOrd-btn" type="button" class="btn btn-primary btn-success" data-toggle="modal" data-target=".modal">Average Order Cost Report</button><br>
+   <button id="avgAlb-btn" type="button" class="btn btn-primary btn-success" data-toggle="modal" data-target=".modal">Average Album Price Report</button><br>
+   
+  <!-- The Modal -->
+  <!--Source Code Source: https://www.w3schools.com/bootstrap/bootstrap_modal.asp-->
+  <div class="modal" id="myReport">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header text-center">
+          <h4 class="modal-title w-100" id="reportTitle"></h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body" id="reportBody">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+        </div>
+      </div>  
+    </div>  
+  </div> <!-- Modal End -->
+</div> <!-- container end -->
     
 <%- include('partials/footer.ejs') %>

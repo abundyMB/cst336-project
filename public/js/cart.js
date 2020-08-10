@@ -36,7 +36,6 @@ $(document).ready(function(){
                         if (lastCharNumber) {
                             cleanString += ",";
                         }
-                        
                         lastCharNumber = false;
                     }
                 }
@@ -116,12 +115,12 @@ $(document).ready(function(){
         });
             
         tax = Math.round((itemsPrice * 0.06), 2);
-        shipping = Math.round((itemsPrice * 0.00), 2);
+        shipping = Math.round((itemsPrice * .10), 2);
         total = Math.round((itemsPrice + tax + shipping), 2);
         
         $("#itemsTotal").html(`Items: $${itemsPrice}`);
         $("#taxTotal").html(`Tax: $${tax}`);
-        $("#shippingTotal").html(`Tax: $${shipping}`);
+        //$("#shippingTotal").html(`Shipping: $${shipping}`);
         $("#orderTotal").html(`Total Price: $${total}`);
     }//calculate totals
     
@@ -154,7 +153,25 @@ $(document).ready(function(){
             customerCart.forEach(function(elem) {
                 albumIDs += elem.albumID + ",";
                 albumTitles += elem.title + ",";
-                $('#cartError').html('<p class="text-success"> Order Placed! (Will redirect to Thank-You Page) </p>');
+                
+                $("#summary").hide();
+                $("#hr1").hide();
+                $("#hr2").hide();
+                $("#placeOrder").hide();
+                $("#itemsTotal").hide();
+                $("#taxTotal").hide();
+                $("#shippingTotal").hide();
+                $("#orderTotal").hide();
+                
+                $('#cartError').html('<p class="text-success" style="font-size: 1.5em"> <strong> Thanks for your Order</strong> </p> ');
+                $('#cartError').append('<p> <i> Check your email for a digital download link! </i> </p>');
+                $('#cartError').append('<p> <strong> Order Details: </strong> </p> <hr />');
+
+                customerCart.forEach(function(elem){
+                $('#cartError').append(`<p>"${elem.title}" — $${elem.price}`);
+                });
+                $('#cartError').append(`<p> <strong> Total Price: </strong> $${total} </p> <hr />`);
+                
             });
             
             submitOrder(albumIDs, albumTitles, total);
@@ -214,7 +231,6 @@ $(document).ready(function(){
          },
 
          success: function(data, status) {
-            console.log("Data from setCart" + data + "Status" + status);
          }
       }); //ajax
    } //setCart()
