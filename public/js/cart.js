@@ -120,7 +120,7 @@ $(document).ready(function(){
         
         $("#itemsTotal").html(`Items: $${itemsPrice}`);
         $("#taxTotal").html(`Tax: $${tax}`);
-        //$("#shippingTotal").html(`Shipping: $${shipping}`);
+        $("#shippingTotal").html(`Shipping: $${shipping}`);
         $("#orderTotal").html(`Total Price: $${total}`);
     }//calculate totals
     
@@ -175,6 +175,7 @@ $(document).ready(function(){
             });
             
             submitOrder(albumIDs, albumTitles, total);
+            $("#cartList").html("");
         }
     });
     

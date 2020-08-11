@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
 const session = require('express-session');
-const request = require('request');
 const bcrypt = require('bcrypt');
 const pool = require('./dbPool.js');
 
@@ -23,44 +22,33 @@ app.listen(process.env.PORT, process.env.IP, function() {
 
 //***View routes*** 
 app.get("/", function(req, res) {
-   res.render("index.ejs", {"username": req.session.adminUsername});
+   res.render("index.ejs", {"username": req.session.adminUsername, "numAlbumsInCart": req.session.numAlbumsInCart});
 });
 
 app.get("/cart", function(req, res) {
-   res.render("cart.ejs", {"username": req.session.adminUsername});
+   res.render("cart.ejs", {"username": req.session.adminUsername, "numAlbumsInCart": req.session.numAlbumsInCart});
 });
 
 app.get("/login", function(req, res) {
-   res.render("login.ejs", {"username": req.session.adminUsername});
+   res.render("login.ejs", {"username": req.session.adminUsername, "numAlbumsInCart": req.session.numAlbumsInCart});
 });
 
 app.get("/signup", function(req, res) {
-   res.render("signup.ejs", {"username": req.session.adminUsername});
+   res.render("signup.ejs", {"username": req.session.adminUsername, "numAlbumsInCart": req.session.numAlbumsInCart});
 });
 
 // Only allows admin to be accessed if an admin is signed in.
 app.get("/admin", isAuthenticated, function(req, res) {
-   res.render("admin.ejs", {"username": req.session.adminUsername});
+   res.render("admin.ejs", {"username": req.session.adminUsername, "numAlbumsInCart": req.session.numAlbumsInCart});
 });
 
 // Only allows admin to be accessed if an admin is signed in.
 app.get("/reports", isAuthenticated, function(req, res) {
-   res.render("reports.ejs", {"username": req.session.adminUsername});
+   res.render("reports.ejs", {"username": req.session.adminUsername, "numAlbumsInCart": req.session.numAlbumsInCart});
 });
 
 app.get("/signup", function(req, res) {
-   res.render("signup.ejs", {"username": req.session.adminUsername});
-});
-
-// Still needs to be built.
-app.get("/thankYou", function(req, res) {
-   res.send("Thank you page currently under construction.");
-});
-
-// Likely will be "hidden" page in final project. Currently accessible for
-// testing purposes.
-app.get("/adminLogin", function(req, res) {
-   res.render("adminLogin.ejs", {"username": req.session.adminUsername});
+   res.render("signup.ejs", {"username": req.session.adminUsername, "numAlbumsInCart": req.session.numAlbumsInCart});
 });
 
 // Logs out of current session. 
@@ -89,13 +77,13 @@ app.post("/", async function(req, res) {
    if (passwordMatch) {
       console.log("Now signed in as admin");
       req.session.authenticated = true;
-      res.render("admin", {"username": req.session.adminUsername});
+      res.render("admin", {"username": req.session.adminUsername, "numAlbumsInCart": req.session.numAlbumsInCart});
    }
    else {
       console.log("No match");
       // Delete saved adminUser and adminID.
       req.session.destroy();
-      res.render("adminLogin", { "loginError": true });
+      res.render("adminLogin", { "loginError": true , "numAlbumsInCart": req.session.numAlbumsInCart});
    }
 });
 
@@ -111,9 +99,12 @@ app.get("/api/populateAlbumsArray", function(req, res) {
 
 //setCart API route sets the customer cart once a customer clicks the add to cart button
 app.get("/api/setCart", function(req, res) {
+   
+   req.session.numAlbumsInCart = getNumAlbumsInCart(req.query.albumIDs);
+   
    let sql = 'INSERT INTO cart (albumIDs, customerID) VALUES (?, ?)';
    let sqlParams = [req.query.albumIDs, req.query.customerID];
-
+   
    pool.query(sql, sqlParams, function(err, rows, fields) {
       if (err) throw err;
       res.send(rows.affectedRows.toString());
@@ -123,9 +114,12 @@ app.get("/api/setCart", function(req, res) {
 //getCart API route gets the albumIDs from the cart to display on the cart.ejs page
 app.get("/api/getCart", function(req, res) {
    let sql = 'SELECT albumIDs FROM cart ORDER BY cartID DESC LIMIT 1';
-
+   
    pool.query(sql, function(err, rows, fields) {
       if (err) throw err;
+      req.session.numAlbumsInCart = getNumAlbumsInCart(rows[0].albumIDs);
+      console.log(rows[0].albumIDs);
+      console.dir(rows);
       res.send(rows);
    });
 }); //api/getCart
@@ -144,11 +138,11 @@ app.get("/api/getMostRecentCart", function(req, res) {
 //submitOrder adds the customer order to the orders table
 app.get("/api/submitOrder", function(req, res) {
    // Delete contents of cart for active user.
-   deleteCart(req, res);
-   
    let sql = 'INSERT INTO orders (albumIDs, albumTitles, orderTotal) VALUES (?,?,?)';
    let sqlParams = [req.query.albumIDs, req.query.albumTitles, req.query.orderTotal];
-
+   
+   deleteCart(req, res);
+   
    pool.query(sql, sqlParams, function(err, rows, fields) {
       if (err) throw err;
       res.send(rows.affectedRows.toString());
@@ -298,4 +292,17 @@ function deleteCart(req, res) {
       if (err) throw err;
       console.log(rows);
    });
+}
+
+function getNumAlbumsInCart(cartString) {
+   let numAlbumsInCart = 0;
+   let cartAlbumsArr = cartString.split(" ");
+   
+   for (let i = 0; i < cartAlbumsArr.length; i++) {
+      if (cartAlbumsArr[i] != '') {
+         numAlbumsInCart++;
+      }
+   }
+   
+   return numAlbumsInCart;
 }

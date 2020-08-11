@@ -104,13 +104,6 @@ $(document).ready(function() {
       }); //ajax
    } //addAlbum
 
-   function updateAlbum() {
-      var update = document.getElementById('update-album').value;
-      // update
-      console.log("Updated albumID:" + update.value);
-      update.value = " ";
-   }
-
    function deleteAlbum() {
       let albumDeleteID = $("#delete-album").val();
       console.log("Album deleteID: " + albumDeleteID);
