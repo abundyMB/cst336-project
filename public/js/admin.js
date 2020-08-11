@@ -111,24 +111,6 @@ $(document).ready(function() {
       update.value = " ";
    }
 
-   function updateAlbumsArray(action, title, artist, coverImage, price, genre, tag1, tag2) {
-      $.ajax({
-         method: "get",
-         url: "/api/updateAlbumsArray",
-         data: {
-            "action": action,
-            "title": title,
-            "artist": artist,
-            "coverImage": coverImage,
-            "price": price,
-            "genre": genre,
-            "tag1": tag1,
-            "tag2": tag2
-         },
-         success: function(data, status) {}
-      }); //ajax
-   } //updateAlbum
-
    function deleteAlbum() {
       let albumDeleteID = $("#delete-album").val();
       console.log("Album deleteID: " + albumDeleteID);
@@ -144,32 +126,6 @@ $(document).ready(function() {
             console.log("Data from setCart" + data + "Status" + status);
          }
       }); //ajax
-   }
-
-   // Form Validation Section
-
-   function isAddFormValid() { // Validate Add Form
-      let isValid = true;
-      if ($("#add-title").val() == "") {
-         isValid = false;
-         $("#validationFdbk").html("Fill out all the form fields");
-      }
-      if ($("#add-artist").val() == "") {
-         isValid = false;
-         $("#validationFdbk").html("Fill out all the form fields");
-      }
-      if ($("#add-coverImage").val() == "") {
-         isValid = false;
-         $("#validationFdbk").html("Fill out all the form fields");
-      }
-      if ($("#add-genre").val() == "") {
-         isValid = false;
-         $("#validationFdbk").html("Fill out all the form fields");
-      }
-      if ($("#add-price").val() == "") {
-         isValid = false;
-         $("#validationFdbk").html("Fill out all the form fields");
-      }
    }
 
    function isUpdateFormValid() { // Validate Update Form
