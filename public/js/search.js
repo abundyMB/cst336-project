@@ -118,11 +118,11 @@ $(document).ready(function() {
       console.dir(albumsArray);
       $("#checkboxContainer").show();
       
+         
       if (!filteredBoolean) {
          //search albums and display results
          foundAlbumsArray = []; // reset albumsFoundArray.
          filteredAlbumsArray = [];//reset filtered albums array
-         $(".checkBox").prop('checked', false); // Uncheck all boxes on new search.
          
          for (let i = 0; i < albumsArray.length; i++) {
             let titleBoolean = albumsArray[i].title.toLowerCase().includes(searchParam);
@@ -183,93 +183,94 @@ $(document).ready(function() {
    });
    
    //function to apply genre checkbox filters 
-      $(".checkBox").on("click", function(){
-         let allUnchecked = true;
+   $(".checkBox").on("click", function(){
+      let allUnchecked = true;
+      
+      $(".checkBox").each(function(){
+         let checkboxValue = $(this).val();
+         let isChecked = this.checked; 
          
-         $(".checkBox").each(function(){
-            let checkboxValue = $(this).val();
-            let isChecked = this.checked; 
-            
-            isChecked ? showSearchResults(checkboxValue, true): "";
-            isChecked ? allUnchecked = false: "";
-         });
-         allUnchecked ? (showSearchResults("all", false)): "";
-      });//onClick()
-      
-      function displayAlbums(albumArr) {
-         console.log("Displaying albums");
-         console.log(albumArr);
-         $("#column1").html("");
-         $("#column2").html("");
-         $("#column3").html("");
-         // Hide columns until results found.
-         $("#column1").hide();
-         $("#column2").hide();
-         $("#column3").hide();
-      
-         let numFoundAlbums = albumArr.length;
-         if (numFoundAlbums == 1) {
-               $("#column1").show();
-               $("#column1").append(`${albumArr[0].coverImage} <br />`);
-               $("#column1").append(`<strong> Artist: </strong> ${albumArr[0].artist} <strong> Album: </strong> <i> ${albumArr[0].title} </i> <strong> <br /> Price: </strong> $${albumArr[0].price} <br />`);
-               $("#column1").append(`<button value=${albumArr[0].albumID} class="btn btn-outline-secondary"> <strong> Add to Cart </strong> </button> <br /> <br />`);
-         }
-         else if (numFoundAlbums == 2) {
+         isChecked ? showSearchResults(checkboxValue, true): "";
+         isChecked ? allUnchecked = false: "";
+      });
+      allUnchecked ? (showSearchResults("all", false)): "";
+   });//onClick()
+   
+   function displayAlbums(albumArr) {
+      console.log("Displaying albums");
+      console.log(albumArr);
+      $("#column1").html("");
+      $("#column2").html("");
+      $("#column3").html("");
+      // Hide columns until results found.
+      $("#column1").hide();
+      $("#column2").hide();
+      $("#column3").hide();
+   
+      let numFoundAlbums = albumArr.length;
+      if (numFoundAlbums == 1) {
             $("#column1").show();
-            $("#column1").css("float", "left");
-            $("#column1").css("width", "45%");
-            $("#column1").css("padding", "10px");
-            
-            $("#column2").show();
-            $("#column2").css("float", "left");
-            $("#column2").css("width", "45%");
-            $("#column2").css("padding", "10px");
-            
-               for (let i = 0; i < albumArr.length; i++) {
-                  let columnNum = i;
-                  let columnName = "";
+            $("#column1").append(`${albumArr[0].coverImage} <br />`);
+            $("#column1").append(`<strong> Artist: </strong> ${albumArr[0].artist} <strong> Album: </strong> <i> ${albumArr[0].title} </i> <strong> <br /> Price: </strong> $${albumArr[0].price} <br />`);
+            $("#column1").append(`<button value=${albumArr[0].albumID} class="btn btn-outline-secondary"> <strong> Add to Cart </strong> </button> <br /> <br />`);
+      }
+      else if (numFoundAlbums == 2) {
+         $("#column1").show();
+         $("#column1").css("float", "left");
+         $("#column1").css("width", "45%");
+         $("#column1").css("padding", "10px");
+         
+         $("#column2").show();
+         $("#column2").css("float", "left");
+         $("#column2").css("width", "45%");
+         $("#column2").css("padding", "10px");
+         
+            for (let i = 0; i < albumArr.length; i++) {
+               let columnNum = i;
+               let columnName = "";
+               
+               if (columnNum == 0)
+                  columnName = "#column1";
+               else if (columnNum == 1)
+                  columnName = "#column2";
                   
-                  if (columnNum == 0)
-                     columnName = "#column1";
-                  else if (columnNum == 1)
-                     columnName = "#column2";
-                     
-                  $(columnName).append(`${albumArr[i].coverImage} <br />`);
-                  $(columnName).append(`<strong> Artist: </strong> ${albumArr[i].artist} <strong> Album: </strong> <i> ${albumArr[i].title} </i> <strong> <br /> Price: </strong> $${albumArr[i].price} <br />`);
-                  $(columnName).append(`<button value=${albumArr[i].albumID} class="btn btn-outline-secondary"> <strong> Add to Cart </strong> </button> <br /> <br />`);
-            }
-         }
-         else if (numFoundAlbums >= 3) {
-            $("#column1").show();
-            $("#column1").css("float", "left");
-            $("#column1").css("width", "30%");
-            $("#column1").css("padding", "10px");
-            
-            $("#column2").show();
-            $("#column2").css("float", "left");
-            $("#column2").css("width", "30%");
-            $("#column2").css("padding", "10px");
-            
-            $("#column3").show();
-            $("#column3").css("float", "left");
-            $("#column3").css("width", "30%");
-            $("#column3").css("padding", "10px");
-           
-               for (let i = 0; i < albumArr.length; i++) {
-                  let columnNum = i;
-                  let columnName = "";
-                  
-                  if (columnNum % 3 == 0)
-                     columnName = "#column1";
-                  else if (columnNum % 3 == 1)
-                     columnName = "#column2";
-                  else if (columnNum % 3 == 2)
-                     columnName = "#column3";
-                     
-                  $(columnName).append(`${albumArr[i].coverImage} <br />`);
-                  $(columnName).append(`<strong> Artist: </strong> ${albumArr[i].artist} <strong> Album: </strong> <i> ${albumArr[i].title} </i> <strong> <br /> Price: </strong> $${albumArr[i].price} <br />`);
-                  $(columnName).append(`<button value=${albumArr[i].albumID} class="btn btn-outline-secondary"> <strong> Add to Cart </strong> </button> <br /> <br />`);
-            }
+               $(columnName).append(`${albumArr[i].coverImage} <br />`);
+               $(columnName).append(`<strong> Artist: </strong> ${albumArr[i].artist} <strong> Album: </strong> <i> ${albumArr[i].title} </i> <strong> <br /> Price: </strong> $${albumArr[i].price} <br />`);
+               $(columnName).append(`<button value=${albumArr[i].albumID} class="btn btn-outline-secondary"> <strong> Add to Cart </strong> </button> <br /> <br />`);
          }
       }
+      else if (numFoundAlbums >= 3) {
+         console.log("albums 3");
+         $("#column1").show();
+         $("#column1").css("float", "left");
+         $("#column1").css("width", "30%");
+         $("#column1").css("padding", "10px");
+         
+         $("#column2").show();
+         $("#column2").css("float", "left");
+         $("#column2").css("width", "30%");
+         $("#column2").css("padding", "10px");
+         
+         $("#column3").show();
+         $("#column3").css("float", "left");
+         $("#column3").css("width", "30%");
+         $("#column3").css("padding", "10px");
+        
+            for (let i = 0; i < albumArr.length; i++) {
+               let columnNum = i;
+               let columnName = "";
+               
+               if (columnNum % 3 == 0)
+                  columnName = "#column1";
+               else if (columnNum % 3 == 1)
+                  columnName = "#column2";
+               else if (columnNum % 3 == 2)
+                  columnName = "#column3";
+                  
+               $(columnName).append(`${albumArr[i].coverImage} <br />`);
+               $(columnName).append(`<strong> Artist: </strong> ${albumArr[i].artist} <strong> Album: </strong> <i> ${albumArr[i].title} </i> <strong> <br /> Price: </strong> $${albumArr[i].price} <br />`);
+               $(columnName).append(`<button value=${albumArr[i].albumID} class="btn btn-outline-secondary"> <strong> Add to Cart </strong> </button> <br /> <br />`);
+         }
+      }
+   }
 }); //document ready
