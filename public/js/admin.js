@@ -1,7 +1,8 @@
 $(document).ready(function() {
 
    // Global variables
-   var updateAlbumID;//this is for the update album function
+   var updateAlbumID; //this is for the update album function
+   localStorage.setItem("cartLength2", '1');
 
    // Event listeners.
 
@@ -11,9 +12,7 @@ $(document).ready(function() {
       // if (!isAddFormValid()) {
       //    return;
       // }
-
       addAlbum();
-      console.log("Add Form Complete");
    });
 
    // Find Album to update
@@ -22,8 +21,6 @@ $(document).ready(function() {
       // if (!isFindFormValid()) {
       //    return;
       // }
-      //Test form submit
-      console.log("Find Album Complete");
    });
 
    // Update function
@@ -32,8 +29,6 @@ $(document).ready(function() {
       if (!isUpdateFormValid()) {
          return;
       }
-      //Test form submit
-      console.log("Update Album form complete");
    });
 
    // Delete function
@@ -43,41 +38,26 @@ $(document).ready(function() {
       if (!isDeleteFormValid()) {
          event.preventDefault();
       }
-
-      console.log("Delete form");
       deleteAlbum();
    });
-
-   $("#updateSearch").on("change", function() {
-
-      // searchAlbum from search.js...
-      let searchValue = $("#updateSearch").val().toLowerCase();
-      let itemFound = false;
-      let albumIDNum = 0;
-      for (let i = 0; i < albumsArray.length; i++) {
-         titleBoolean = albumsArray[i].title.toLowerCase().includes(searchValue);
-         artistBoolean = albumsArray[i].artist.toLowerCase().includes(searchValue);
-
-         if (titleBoolean || artistBoolean) {
-            $("#updateResult").html(`${albumsArray[i].coverImage} <br />`);
-            $("#updateResult").append(`<strong> Artist: </strong> ${albumsArray[i].artist} <strong> Album: </strong> <i> ${albumsArray[i].title} </i> <strong> <br /> Price: </strong> $${albumsArray[i].price} <br /> <br />`);
-            // omitted, not needed-> $("#updateResult").append(`<button  id="addToCart" value=${albumsArray[i].albumID} class="btn btn-outline-secondary"> Add to Cart </button>`);
-            albumIDNum = albumsArray[i].albumID;
-            console.log(albumIDNum);
-            console.log("Test");
-            itemFound = true;
-         }
-      } //close for
-
-      if (!itemFound) {
-         $("#updateResult").html("<p> No results found ... </p>");
-      }
-   }); //close album search 
 
    // ...end Listener Section
 
    // start Functions Section
 
+   /**
+    * Add album function adds one album entry from the database and 
+    * takes seven parameters for input.
+    * 
+    * @param title
+    * @param artist
+    * @param coverImage
+    * @param price
+    * @param genre
+    * @param tag1
+    * @param tag2
+    * 
+    */
    function addAlbum() {
       let albumAddTitle = $("#add-title").val();
       let albumAddArtist = $("#add-artist").val();
@@ -104,6 +84,44 @@ $(document).ready(function() {
       }); //ajax
    } //addAlbum
 
+
+   /**
+    *updateAlbumsArray function takes seven parameters and updates the fields
+    * for one album.
+    * 
+    * @param action
+    * @param title
+    * @param artist
+    * @param coverImage
+    * @param price
+    * @param genre
+    * @param tag1
+    * @param tag2
+    */
+   function updateAlbumsArray(action, title, artist, coverImage, price, genre, tag1, tag2) {
+      $.ajax({
+         method: "get",
+         url: "/api/updateAlbumsArray",
+         data: {
+            "action": action,
+            "title": title,
+            "artist": artist,
+            "coverImage": coverImage,
+            "price": price,
+            "genre": genre,
+            "tag1": tag1,
+            "tag2": tag2
+         },
+         success: function(data, status) {}
+      }); //ajax
+   } //updateAlbum
+
+   /**
+    * Delete album function deletes one album entry from the database and 
+    * takes the albumID as input.
+    * 
+    * @param albumID
+    */
    function deleteAlbum() {
       let albumDeleteID = $("#delete-album").val();
       console.log("Album deleteID: " + albumDeleteID);
@@ -119,6 +137,32 @@ $(document).ready(function() {
             console.log("Data from setCart" + data + "Status" + status);
          }
       }); //ajax
+   }
+
+   // Form Validation Section
+
+   function isAddFormValid() { // Validate Add Form
+      let isValid = true;
+      if ($("#add-title").val() == "") {
+         isValid = false;
+         $("#validationFdbk").html("Fill out all the form fields");
+      }
+      if ($("#add-artist").val() == "") {
+         isValid = false;
+         $("#validationFdbk").html("Fill out all the form fields");
+      }
+      if ($("#add-coverImage").val() == "") {
+         isValid = false;
+         $("#validationFdbk").html("Fill out all the form fields");
+      }
+      if ($("#add-genre").val() == "") {
+         isValid = false;
+         $("#validationFdbk").html("Fill out all the form fields");
+      }
+      if ($("#add-price").val() == "") {
+         isValid = false;
+         $("#validationFdbk").html("Fill out all the form fields");
+      }
    }
 
    function isUpdateFormValid() { // Validate Update Form
@@ -154,17 +198,17 @@ $(document).ready(function() {
       }
       return isValid;
    }
-   
+
    //retrieve album data after albumID is entered 
-   $("#updateAlbum").on("change", function(){
-      updateAlbumID = $(this).val(); 
+   $("#updateAlbum").on("change", function() {
+      updateAlbumID = $(this).val();
       $.ajax({
          method: "GET",
          url: "/api/retrieveAlbumDetails",
-         data: {"albumID": updateAlbumID},
-         
-         success: function(data, status){
-            data.forEach(function(elem){
+         data: { "albumID": updateAlbumID },
+
+         success: function(data, status) {
+            data.forEach(function(elem) {
                $("#update-title").attr("value", elem.title);
                $("#update-artist").attr("value", elem.artist);
                $("#update-coverImage").attr("value", elem.coverImage);
@@ -172,32 +216,32 @@ $(document).ready(function() {
                $("#update-genre").attr("value", elem.genre);
                $("#update-tag1").attr("value", elem.tag1);
                $("#update-tag2").attr("value", elem.tag2);
-            });//forEach()
+            }); //forEach()
          }
-      });//ajax
+      }); //ajax
    });
-   
+
    //submit album attributes for update album form
-   $("#updateAlbumAttributes").on("click", function(e){
-      
-     let albumID = updateAlbumID;
-     let title = $("#update-title").val();
-     let artist =$("#update-artist").val();
-     let coverImage =$("#update-coverImage").val();
-     let price =$("#update-price").val();
-     let genre =$("#update-genre").val();
-     let tag1 = $("#update-tag1").val();
-     let tag2 =$("#update-tag2").val();
-     
-     $.ajax({
-        method: "GET",
-        url: "/api/updateAlbumsDatabase",
-        data: {"title":title, "artist":artist, "coverImage":coverImage, "price":price, "albumID":albumID, "genre": genre, "tag1":tag1, "tag2":tag2},
-        
-        success: function(data, status){
-           console.log(status);
-        }
-     });//ajax  
+   $("#updateAlbumAttributes").on("click", function(e) {
+
+      let albumID = updateAlbumID;
+      let title = $("#update-title").val();
+      let artist = $("#update-artist").val();
+      let coverImage = $("#update-coverImage").val();
+      let price = $("#update-price").val();
+      let genre = $("#update-genre").val();
+      let tag1 = $("#update-tag1").val();
+      let tag2 = $("#update-tag2").val();
+
+      $.ajax({
+         method: "GET",
+         url: "/api/updateAlbumsDatabase",
+         data: { "title": title, "artist": artist, "coverImage": coverImage, "price": price, "albumID": albumID, "genre": genre, "tag1": tag1, "tag2": tag2 },
+
+         success: function(data, status) {
+            console.log(status);
+         }
+      }); //ajax  
    });
    // ...end Form Validation section
    // ...end Functions section

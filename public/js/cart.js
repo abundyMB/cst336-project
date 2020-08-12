@@ -54,7 +54,7 @@ $(document).ready(function(){
         });//ajax
     }//getCart()
     
-    //API call using Ajax to populate albums array from database. Uses app.get("/api/populateAlbumsArray") route in App.js
+    //API call using Ajax to populate albums array from database. Uses app.get("/api/populateAlbumsArray") route in app.js
     populateAlbumArray();
     function populateAlbumArray(){
         $.ajax({
@@ -120,7 +120,7 @@ $(document).ready(function(){
         
         $("#itemsTotal").html(`Items: $${itemsPrice}`);
         $("#taxTotal").html(`Tax: $${tax}`);
-        $("#shippingTotal").html(`Shipping: $${shipping}`);
+        //$("#shippingTotal").html(`Shipping: $${shipping}`);
         $("#orderTotal").html(`Total Price: $${total}`);
     }//calculate totals
     
@@ -163,7 +163,7 @@ $(document).ready(function(){
                 $("#shippingTotal").hide();
                 $("#orderTotal").hide();
                 
-                $('#cartError').html('<p class="text-success" style="font-size: 1.5em"> <strong> Thanks for your Order</strong> </p> ');
+                $('#cartError').html('<p class="text-success" style="font-size: 1.5em"> ♫ <strong> Thanks for your Order </strong> ♫ </p> ');
                 $('#cartError').append('<p> <i> Check your email for a digital download link! </i> </p>');
                 $('#cartError').append('<p> <strong> Order Details: </strong> </p> <hr />');
 
@@ -175,7 +175,6 @@ $(document).ready(function(){
             });
             
             submitOrder(albumIDs, albumTitles, total);
-            $("#cartList").html("");
         }
     });
     

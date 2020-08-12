@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <!-- reference: https://getbootstrap.com/docs/4.0/components/modal/ -->
 <!-- reference: https://emojipedia.org/samsung/experience-9.0/shopping-cart/ -->
+<!-- reference: https://getbootstrap.com/docs/4.0/components/card/ --> 
 <html>
     <head>
      <meta charset="utf-8">
@@ -20,17 +21,18 @@
     
 <nav class="navbar navbar-light bg-light">
     <a href="/" id="home"> Home </a> 
-    <a href="/cart" id="cart"> 🛒 Shopping Cart (<%= numAlbumsInCart %>) </a>
+    <a href="/cart" id="cart"> 🛒 Shopping Cart 
+        <% if (typeof numAlbumsInCart != "undefined") { %>
+           (<%= numAlbumsInCart %>)
+        <% } %> </a>
     <a href="/admin" id=admin> Admin </a>
     <a href="/login" id=login> Login </a>
     <a href="/logout" id=logout> Logout </a>
-</nav>
-<br />
+</nav> 
 
 <% if (typeof username != "undefined") { %>
     <h4 id="userWelcome">Welcome <%= username %>!</h4>
 <% } %>
-<br />
-    
-<body class="text-center">
+
+<body style="text-align: center">
 <h1 class="jumbotron"> ♫ <strong style="font-size: 1.1em"> ƒidelity </strong> audio ♪ </h1>

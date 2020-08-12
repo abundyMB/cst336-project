@@ -1,13 +1,12 @@
 <%- include('partials/header.ejs') %>
-
-    <script src="/js/search.js"></script>
+<script src="/js/search.js"></script>
 
     <h4>♪ Find an album... </h4>
      <input type="text" id="albumSearch" placeholder="Title, artist, or genre"> 
      <input type="text" id="priceSearch" placeholder="Price is less than..."> 
-     </div>
+     
      <br /> <br />
-    <h5>Recommended album: </h5>
+    <h5>Recommended Albums for you: </h5>
     
     <!-- Searched for albums show here. Default before search is a randomly selected album. -->
     
@@ -17,9 +16,13 @@
         <input class="checkBox" type="checkbox" id="classical" name="classical" value="classical"> Classical </input> 
         <input class="checkBox" type="checkbox" id="jazz" name="jazz" value="jazz"> Jazz </input> 
         <input class="checkBox" type="checkbox" id="blues" name="blues" value="blues"> Blues </input> 
-    </div> <br /> <br />
+    </div> <br /> 
     
-    <div id="searchResult">
-    </div>
+   <span id="searchResult">
+
+  <div class="row"> <div class="col"> <div class="card"> <div class="card-body"> <img src="/img/abbeyroad.jpg" alt="Abbey Road - Beatles"> <br> <strong> Artist: </strong> The Beatles <strong> Album: </strong> <i> Abbey Road </i> <strong> <br> Price: </strong> $25 <br> <button value="1" class="btn btn-outline-secondary"> <strong> Add to Cart </strong> </button> </div> </div></div></div>
+   
+    </span>
+    <br /> <br />
     
 <%- include('partials/footer.ejs') %>
