@@ -35,7 +35,6 @@ $(document).ready(function() {
 
          success: function(data, status) {
             
-            console.log("getCart: " + data);
             let string = JSON.stringify(data);
             let newString = string.replace('[{"albumIDs":"', "").replace(' "}]', "").split(' ').toString();
 

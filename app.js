@@ -66,7 +66,6 @@ app.post("/", async function(req, res) { // post route route
    let password = req.body.adminpwd;
 
    let result = await checkUsername(username, req);
-   console.dir("Result: ");
    console.dir(result);
    let hashedPwd = "";
 
@@ -75,17 +74,14 @@ app.post("/", async function(req, res) { // post route route
    }
 
    let passwordMatch = await checkPassword(password, hashedPwd);
-   console.log("passwordMatch: " + passwordMatch);
-
+   
    if (passwordMatch) {
-      console.log("Now signed in as admin");
       req.session.authenticated = true;
       req.session.numAlbumsInCart = null;
       req.session.albumIDs = null;
       res.render("admin");
    }
    else {
-      console.log("No match");
       res.render("adminLogin.ejs", { "loginError": true });
    }
 });
@@ -118,7 +114,6 @@ app.get("/api/setCart", function(req, res) {
 app.get("/api/getCart", function(req, res) {
    
    let sql = 'SELECT albumIDs FROM cart WHERE customerID = ? ORDER BY cartID DESC LIMIT 1';
-   console.log("SessionID: " + req.session.id);
    let sqlParams = [req.session.id]; 
 
    pool.query(sql, sqlParams, function(err, rows, fields) {
@@ -250,8 +245,7 @@ function checkUsername(username, req) {
    return new Promise(function(resolve, reject) {
       pool.query(sql, [username], function(err, rows, fields) {
          if (err) throw err;
-         console.log("Rows found: " + rows.length);
-         console.log(rows);
+            console.log(rows);
 
          resolve(rows);
       });
