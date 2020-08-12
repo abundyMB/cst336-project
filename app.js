@@ -113,13 +113,11 @@ app.get("/api/setCart", function(req, res) {
 
 //getCart API route gets the albumIDs from the cart to display on the cart.ejs page
 app.get("/api/getCart", function(req, res) {
-   let sql = 'SELECT cartID FROM cart ORDER BY cartID DESC LIMIT 1';
-   // let sql = 'SELECT cartID FROM cart WHERE customerID = ? ORDER BY cartID DESC LIMIT 1';
-   let sqlParams = [req.query.customerID];
+   let sql = 'SELECT albumIDs FROM cart ORDER BY cartID DESC LIMIT 1';
 
-   pool.query(sql, sqlParams, function(err, rows, fields) {
+   pool.query(sql, function(err, rows, fields) {
       if (err) throw err;
-      res.send(rows.affectedRows.toString());
+      res.send(rows);
    });
 }); //api/getCart
 
@@ -131,7 +129,7 @@ app.get("/api/getMostRecentCart", function(req, res) {
 
    pool.query(sql, sqlParams, function(err, rows, fields) {
       if (err) throw err;
-      res.send(rows.affectedRows.toString());
+      res.send(rows);
    });
 }); //api/getMostCart
 
