@@ -20,6 +20,7 @@ $(document).ready(function() {
          success: function(data, status) {
             data.forEach(function(elem, i) {
                albumsArray[i] = { albumID: elem.albumID, title: elem.title, artist: elem.artist, coverImage: elem.coverImage, price: elem.price, genre: elem.genre };
+               
             });
          }
       }); //ajax
@@ -33,6 +34,8 @@ $(document).ready(function() {
          async: false,
 
          success: function(data, status) {
+            
+            console.log("getCart: " + data);
             let string = JSON.stringify(data);
             let newString = string.replace('[{"albumIDs":"', "").replace(' "}]', "").split(' ').toString();
 

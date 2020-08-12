@@ -1,6 +1,10 @@
 <%- include('partials/header.ejs') %>
 <script src="/js/search.js"></script>
 
+    <% if (typeof adminLoggedIn != "undefined" && adminLoggedIn) { %>
+            <h4 class="error text-danger">Cannot purchase albums as admin</h4>
+    <% } %>
+    
     <h4>♪ Find an album... </h4>
      <input type="text" id="albumSearch" placeholder="Title, artist, or genre"> 
      <input type="text" id="priceSearch" placeholder="Price is less than..."> 

@@ -22,33 +22,36 @@ app.listen(process.env.PORT, process.env.IP, function() {
 
 //***View routes*** 
 app.get("/", function(req, res) { // root route
-   res.render("index.ejs", { "numAlbumsInCart": req.session.numAlbumsInCart});
+   if (!req.session.numAlbumsInCart && !req.session.authenticated) {
+      req.session.numAlbumsInCart = 0;
+   }
+   
+   if (req.session.authenticated)
+      res.render("index.ejs");
+   else 
+      res.render("index.ejs", { "numAlbumsInCart": req.session.numAlbumsInCart});
 });
 
 app.get("/cart", function(req, res) { // cart page route
-   res.render("cart.ejs", { "numAlbumsInCart": req.session.numAlbumsInCart });
-});
-
-app.get("/login", function(req, res) { // login page route
-   res.render("login.ejs", { "numAlbumsInCart": req.session.numAlbumsInCart });
-});
-
-app.get("/signup", function(req, res) { // signup page route
-   res.render("signup.ejs", { "numAlbumsInCart": req.session.numAlbumsInCart });
+   
+   if (!req.session.numAlbumsInCart && !req.session.authenticated) {
+      req.session.numAlbumsInCart = 0;
+   }
+   
+   if (req.session.authenticated)
+      res.render("cart.ejs");
+   else 
+      res.render("cart.ejs", { "numAlbumsInCart": req.session.numAlbumsInCart });
 });
 
 // admin page route only allows admin to be accessed if an admin is signed in.
 app.get("/admin", isAuthenticated, function(req, res) {
-   res.render("admin.ejs", { "numAlbumsInCart": req.session.numAlbumsInCart });
+   res.render("admin.ejs");
 });
 
 // reports page route only allows admin to be accessed if an admin is signed in.
 app.get("/reports", isAuthenticated, function(req, res) {
-   res.render("reports.ejs", { "numAlbumsInCart": req.session.numAlbumsInCart });
-});
-
-app.get("/signup", function(req, res) { // signup page route
-   res.render("signup.ejs", { "numAlbumsInCart": req.session.numAlbumsInCart });
+   res.render("reports.ejs");
 });
 
 // Logs out of current session. 
@@ -77,13 +80,13 @@ app.post("/", async function(req, res) { // post route route
    if (passwordMatch) {
       console.log("Now signed in as admin");
       req.session.authenticated = true;
+      req.session.numAlbumsInCart = null;
+      req.session.albumIDs = null;
       res.render("admin");
    }
    else {
       console.log("No match");
-      // Delete saved adminUser and adminID.
-      req.session.destroy();
-      res.render("adminLogin", { "loginError": true });
+      res.render("adminLogin.ejs", { "loginError": true });
    }
 });
 
@@ -103,7 +106,7 @@ app.get("/api/setCart", function(req, res) {
    req.session.numAlbumsInCart = getNumAlbumsInCart(req.query.albumIDs);
    
    let sql = 'INSERT INTO cart (albumIDs, customerID) VALUES (?, ?)';
-   let sqlParams = [req.query.albumIDs, req.query.customerID];
+   let sqlParams = [req.query.albumIDs, req.session.id];
 
    pool.query(sql, sqlParams, function(err, rows, fields) {
       if (err) throw err;
@@ -113,26 +116,20 @@ app.get("/api/setCart", function(req, res) {
 
 //getCart API route gets the albumIDs from the cart to display on the cart.ejs page
 app.get("/api/getCart", function(req, res) {
-   let sql = 'SELECT albumIDs FROM cart ORDER BY cartID DESC LIMIT 1';
-
-   pool.query(sql, function(err, rows, fields) {
-      if (err) throw err;
-      res.send(rows);
-   });
-}); //api/getCart
-
-//getMostRecentCart API route gets the cartID of the most recent cart
-app.get("/api/getMostRecentCart", function(req, res) {
-   let sql = 'SELECT cartID FROM cart ORDER BY cartID DESC LIMIT 1';
-   // let sql = 'SELECT cartID FROM cart WHERE customerID = ? ORDER BY cartID DESC LIMIT 1';
-   let sqlParams = [req.query.customerID];
+   
+   let sql = 'SELECT albumIDs FROM cart WHERE customerID = ? ORDER BY cartID DESC LIMIT 1';
+   console.log("SessionID: " + req.session.id);
+   let sqlParams = [req.session.id]; 
 
    pool.query(sql, sqlParams, function(err, rows, fields) {
       if (err) throw err;
+      if (!rows[0]) {
+         req.session.albumIDs = "";
+         req.session.numAlbumsInCart = 0;
+      }
       res.send(rows);
    });
-}); //api/getMostCart
-
+}); //api/getCart
 
 //submitOrder adds the customer order to the orders table
 app.get("/api/submitOrder", function(req, res) {
@@ -256,19 +253,10 @@ function checkUsername(username, req) {
          console.log("Rows found: " + rows.length);
          console.log(rows);
 
-         // Save adminID and username if there is a match.
-         if (rows.length == 1) {
-            req.session.adminID = rows[0].adminID;
-            req.session.adminUsername = rows[0].username;
-            console.log("Req adminID: " + req.session.adminID);
-            console.log("Req username: " + req.session.adminUsername);
-         }
-
          resolve(rows);
       });
    });
 }
-
 
 
 /**
@@ -291,7 +279,7 @@ function checkPassword(password, hashedValue) {
 // Currently only for admin.
 function isAuthenticated(req, res, next) {
    if (!req.session.authenticated) {
-      res.redirect("/adminLogin");
+      res.render("adminLogin.ejs");
    }
    else {
       next();
@@ -302,8 +290,7 @@ function isAuthenticated(req, res, next) {
 // sign-in is required.
 function deleteCart(req, res) {
    let sql = "DELETE FROM cart WHERE customerID = ?";
-   let sqlParams = 0; // Delete at customerID = 0. All records.
-   // let sqlParams = [req.session.customerID];
+   let sqlParams = [req.session.id];
 
    pool.query(sql, sqlParams, function(err, rows, fields) {
       if (err) throw err;

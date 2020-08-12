@@ -19,7 +19,9 @@
         </form>
         
         <!--Displays error when not signed in-->
-        <%- include('partials/loginError.ejs') %>
+        <% if (typeof loginError != "undefined" && loginError) { %>
+            <h4 class="error text-danger">Wrong credentials</h4>
+        <% } %>
     </div>
     <br /><br />
 <%- include('partials/footer.ejs') %>
